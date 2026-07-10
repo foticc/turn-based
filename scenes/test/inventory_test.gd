@@ -1,10 +1,9 @@
 extends Control
 ## 物品栏功能测试场景。
 
-const InventoryPanelScript := preload("res://src/inventory/inventory_panel.gd")
 
 @onready var inventory: Inventory = $Inventory
-@onready var inventory_panel: InventoryPanelScript = $MarginContainer/VBox/InventoryPanelHost/InventoryPanel
+@onready var inventory_panel: InventoryPanel = $MarginContainer/VBox/InventoryPanelHost/InventoryPanel
 @onready var hp_label: Label = $MarginContainer/VBox/StatsPanel/HPLabel
 @onready var selected_label: Label = $MarginContainer/VBox/StatsPanel/SelectedLabel
 @onready var log_label: RichTextLabel = $MarginContainer/VBox/LogLabel

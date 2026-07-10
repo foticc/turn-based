@@ -39,4 +39,3 @@ func _on_gui_input(event: InputEvent) -> void:
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
 			slot_clicked.emit(slot_index)
-

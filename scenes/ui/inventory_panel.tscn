@@ -1,29 +1,29 @@
-[gd_scene format=3 uid="uid://inv_panel_ui01"]
+[gd_scene format=3 uid="uid://oo25b76c1rp8"]
 
-[ext_resource type="Script" path="res://src/inventory/inventory_panel.gd" id="1_panel"]
+[ext_resource type="Script" uid="uid://c8kswskkfd6s8" path="res://scenes/ui/inventory_panel.gd" id="1_panel"]
 
-[node name="InventoryPanel" type="PanelContainer"]
+[node name="InventoryPanel" type="PanelContainer" unique_id=246208314]
 custom_minimum_size = Vector2(820, 220)
 script = ExtResource("1_panel")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=65352865]
 layout_mode = 2
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 10
 
-[node name="VBox" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBox" type="VBoxContainer" parent="MarginContainer" unique_id=614921654]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="TitleLabel" type="Label" parent="MarginContainer/VBox"]
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBox" unique_id=389131934]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "物品栏"
 horizontal_alignment = 1
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBox"]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBox" unique_id=34630319]
 layout_mode = 2
 theme_override_constants/h_separation = 6
 theme_override_constants/v_separation = 6
