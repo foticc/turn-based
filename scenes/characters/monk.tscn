@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://crjsd0u2hmsvp"]
+
+[ext_resource type="Texture2D" uid="uid://bexop3x182g6d" path="res://asset/Tiny Swords (Free Pack)/Units/Blue Units/Monk/Idle.png" id="1_hgnqc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7wbpr"]
+atlas = ExtResource("1_hgnqc")
+region = Rect2(0, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k0jlc"]
+atlas = ExtResource("1_hgnqc")
+region = Rect2(192, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8icvp"]
+atlas = ExtResource("1_hgnqc")
+region = Rect2(384, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o4mlt"]
+atlas = ExtResource("1_hgnqc")
+region = Rect2(576, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vwfsv"]
+atlas = ExtResource("1_hgnqc")
+region = Rect2(768, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7kooe"]
+atlas = ExtResource("1_hgnqc")
+region = Rect2(960, 0, 192, 192)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wcnp6"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7wbpr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k0jlc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8icvp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o4mlt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vwfsv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7kooe")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 10.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hgnqc"]
+radius = 37.0
+
+[node name="Monk" type="CharacterBody2D" unique_id=1267833331]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1307062804]
+sprite_frames = SubResource("SpriteFrames_wcnp6")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=921760471]
+shape = SubResource("CircleShape2D_hgnqc")

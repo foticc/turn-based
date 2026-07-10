@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://b74sja7nlqnnh"]
+
+[ext_resource type="Script" uid="uid://dvfa6s6y4prkp" path="res://scenes/test/turn_based_test.gd" id="1_test"]
+[ext_resource type="Script" uid="uid://cxeuv040ehlfd" path="res://src/turn_based/turn_manager.gd" id="2_manager"]
+
+[node name="TurnBasedTest" type="Control" unique_id=370709691]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_test")
+
+[node name="TurnManager" type="Node" parent="." unique_id=1076894265]
+script = ExtResource("2_manager")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1558539796]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="MarginContainer" unique_id=1879858122]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBox" unique_id=1765060665]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "回合制框架测试"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="MarginContainer/VBox" unique_id=1068462669]
+layout_mode = 2
+text = "等待开始..."
+horizontal_alignment = 1
+
+[node name="TeamsHBox" type="HBoxContainer" parent="MarginContainer/VBox" unique_id=960468950]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 32
+
+[node name="PlayerPanel" type="VBoxContainer" parent="MarginContainer/VBox/TeamsHBox" unique_id=963339382]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerTitle" type="Label" parent="MarginContainer/VBox/TeamsHBox/PlayerPanel" unique_id=1819771844]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "玩家队伍"
+
+[node name="PlayerList" type="VBoxContainer" parent="MarginContainer/VBox/TeamsHBox/PlayerPanel" unique_id=1850874147]
+layout_mode = 2
+
+[node name="EnemyPanel" type="VBoxContainer" parent="MarginContainer/VBox/TeamsHBox" unique_id=1836258103]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EnemyTitle" type="Label" parent="MarginContainer/VBox/TeamsHBox/EnemyPanel" unique_id=2040715669]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "敌人队伍"
+
+[node name="EnemyList" type="VBoxContainer" parent="MarginContainer/VBox/TeamsHBox/EnemyPanel" unique_id=1443856380]
+layout_mode = 2
+
+[node name="ActionPanel" type="HBoxContainer" parent="MarginContainer/VBox" unique_id=73051967]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="TargetPanel" type="HBoxContainer" parent="MarginContainer/VBox" unique_id=1020058566]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="LogLabel" type="RichTextLabel" parent="MarginContainer/VBox" unique_id=117684059]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true
+
+[node name="RestartButton" type="Button" parent="MarginContainer/VBox" unique_id=70554475]
+layout_mode = 2
+text = "重新开始"

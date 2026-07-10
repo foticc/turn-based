@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bfmptxum86xm5"]
+
+[ext_resource type="PackedScene" uid="uid://b6nwdxlrvdr16" path="res://scenes/map/novice_village.tscn" id="1_bl13t"]
+[ext_resource type="PackedScene" uid="uid://cqe6mn3ota1t1" path="res://scenes/characters/warrior.tscn" id="2_iyx0m"]
+
+[node name="Test" type="Node2D" unique_id=1849031348]
+
+[node name="NoviceVillage" parent="." unique_id=1831196246 instance=ExtResource("1_bl13t")]
+
+[node name="Warrior" parent="." unique_id=1715392487 instance=ExtResource("2_iyx0m")]
+position = Vector2(253, 214)
