@@ -1,0 +1,99 @@
+[gd_scene format=3 uid="uid://inv_test_scene01"]
+
+[ext_resource type="Script" path="res://scenes/test/inventory_test.gd" id="1_test"]
+[ext_resource type="Script" path="res://src/inventory/inventory.gd" id="2_inventory"]
+[ext_resource type="PackedScene" uid="uid://inv_panel_ui01" path="res://scenes/ui/inventory_panel.tscn" id="3_panel"]
+
+[node name="InventoryTest" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_test")
+
+[node name="Inventory" type="Node" parent="."]
+script = ExtResource("2_inventory")
+capacity = 16
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "物品栏测试"
+horizontal_alignment = 1
+
+[node name="StatsPanel" type="HBoxContainer" parent="MarginContainer/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="HPLabel" type="Label" parent="MarginContainer/VBox/StatsPanel"]
+layout_mode = 2
+text = "生命值：80 / 100"
+
+[node name="SelectedLabel" type="Label" parent="MarginContainer/VBox/StatsPanel"]
+layout_mode = 2
+text = "选中：无"
+
+[node name="InventoryPanelHost" type="CenterContainer" parent="MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="InventoryPanel" parent="MarginContainer/VBox/InventoryPanelHost" instance=ExtResource("3_panel")]
+layout_mode = 2
+
+[node name="ButtonRow" type="HBoxContainer" parent="MarginContainer/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="AddPotionButton" type="Button" parent="MarginContainer/VBox/ButtonRow"]
+layout_mode = 2
+text = "+ 生命药水"
+
+[node name="AddGreaterPotionButton" type="Button" parent="MarginContainer/VBox/ButtonRow"]
+layout_mode = 2
+text = "+ 大生命药水"
+
+[node name="AddSwordButton" type="Button" parent="MarginContainer/VBox/ButtonRow"]
+layout_mode = 2
+text = "+ 铁剑"
+
+[node name="AddHerbButton" type="Button" parent="MarginContainer/VBox/ButtonRow"]
+layout_mode = 2
+text = "+ 草药"
+
+[node name="UseButton" type="Button" parent="MarginContainer/VBox/ButtonRow"]
+layout_mode = 2
+text = "使用选中"
+
+[node name="RemoveButton" type="Button" parent="MarginContainer/VBox/ButtonRow"]
+layout_mode = 2
+text = "丢弃选中"
+
+[node name="ClearButton" type="Button" parent="MarginContainer/VBox/ButtonRow"]
+layout_mode = 2
+text = "清空背包"
+
+[node name="LogLabel" type="RichTextLabel" parent="MarginContainer/VBox"]
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true

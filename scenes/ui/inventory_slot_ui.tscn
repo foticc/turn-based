@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://inv_slot_ui01"]
+
+[ext_resource type="Script" path="res://scenes/ui/inventory_slot_ui.gd" id="1_slot"]
+
+[node name="InventorySlotUI" type="PanelContainer"]
+custom_minimum_size = Vector2(96, 72)
+script = ExtResource("1_slot")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 4
+
+[node name="VBox" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBox"]
+layout_mode = 2
+text = "物品"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="CountLabel" type="Label" parent="MarginContainer/VBox"]
+layout_mode = 2
+horizontal_alignment = 2
