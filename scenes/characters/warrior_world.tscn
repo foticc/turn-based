@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://warrior_world_scene"]
+
+[ext_resource type="PackedScene" uid="uid://cqe6mn3ota1t1" path="res://scenes/characters/warrior.tscn" id="1_visual"]
+[ext_resource type="Script" path="res://scenes/characters/world_click_move.gd" id="2_move"]
+
+[node name="WarriorWorld" instance=ExtResource("1_visual")]
+script = ExtResource("2_move")

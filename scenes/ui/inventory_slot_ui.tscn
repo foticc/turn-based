@@ -1,28 +1,28 @@
-[gd_scene format=3 uid="uid://inv_slot_ui01"]
+[gd_scene format=3 uid="uid://cbx3hssmfikvc"]
 
-[ext_resource type="Script" path="res://scenes/ui/inventory_slot_ui.gd" id="1_slot"]
+[ext_resource type="Script" uid="uid://bgrqe5niqwsfb" path="res://scenes/ui/inventory_slot_ui.gd" id="1_slot"]
 
-[node name="InventorySlotUI" type="PanelContainer"]
+[node name="InventorySlotUI" type="PanelContainer" unique_id=1383441532]
 custom_minimum_size = Vector2(96, 72)
 script = ExtResource("1_slot")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=426556716]
 layout_mode = 2
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 6
 theme_override_constants/margin_bottom = 4
 
-[node name="VBox" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBox" type="VBoxContainer" parent="MarginContainer" unique_id=2006844476]
 layout_mode = 2
 alignment = 1
 
-[node name="NameLabel" type="Label" parent="MarginContainer/VBox"]
+[node name="NameLabel" type="Label" parent="MarginContainer/VBox" unique_id=2036512110]
 layout_mode = 2
 text = "物品"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="CountLabel" type="Label" parent="MarginContainer/VBox"]
+[node name="CountLabel" type="Label" parent="MarginContainer/VBox" unique_id=1806711122]
 layout_mode = 2
 horizontal_alignment = 2

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bx5nxya68trro" path="res://scenes/test/inventory_test.gd" id="1_test"]
 [ext_resource type="Script" uid="uid://dosy2f6fewrfm" path="res://src/inventory/inventory.gd" id="2_inventory"]
-[ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="3_panel"]
+[ext_resource type="PackedScene" uid="uid://oo25b76c1rp8" path="res://scenes/ui/inventory_panel.tscn" id="3_panel"]
 
 [node name="InventoryTest" type="Control" unique_id=1169309958]
 layout_mode = 3
@@ -34,7 +34,6 @@ theme_override_constants/separation = 12
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/VBox" unique_id=2050394489]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
 text = "物品栏测试"
 horizontal_alignment = 1
 

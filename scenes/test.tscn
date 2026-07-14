@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bfmptxum86xm5"]
 
 [ext_resource type="PackedScene" uid="uid://b6nwdxlrvdr16" path="res://scenes/map/novice_village.tscn" id="1_bl13t"]
-[ext_resource type="PackedScene" uid="uid://cqe6mn3ota1t1" path="res://scenes/characters/warrior.tscn" id="2_iyx0m"]
+[ext_resource type="PackedScene" uid="uid://warrior_world_scene" path="res://scenes/characters/warrior_world.tscn" id="2_iyx0m"]
 
 [node name="Test" type="Node2D" unique_id=1849031348]
 

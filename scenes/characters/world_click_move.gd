@@ -1,7 +1,7 @@
 extends CharacterBody2D
-## 可通过鼠标左键点击地面移动的角色。
+## 大地图点击移动控制器（与战斗脚本分离）。
 
-@export var speed: float = 120.0
+@export var move_speed: float = 120.0
 @export var stop_distance: float = 4.0
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -38,7 +38,7 @@ func _physics_process(_delta: float) -> void:
 		return
 
 	var direction := to_target / distance
-	velocity = direction * speed
+	velocity = direction * move_speed
 	_update_facing(direction)
 	_set_animation(&"run")
 	move_and_slide()

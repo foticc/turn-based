@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://warrior_battle_scene"]
+
+[ext_resource type="PackedScene" uid="uid://cqe6mn3ota1t1" path="res://scenes/characters/warrior.tscn" id="1_visual"]
+[ext_resource type="Script" path="res://scenes/characters/battle_actor.gd" id="2_actor"]
+
+[node name="WarriorBattle" instance=ExtResource("1_visual")]
+script = ExtResource("2_actor")
+display_name = "战士"
+attack_animation = &"attack1"
+skill_animation = &"attack2"
+defend_animation = &"guard"

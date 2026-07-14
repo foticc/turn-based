@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://monk_battle_scene"]
+
+[ext_resource type="PackedScene" uid="uid://crjsd0u2hmsvp" path="res://scenes/characters/monk.tscn" id="1_visual"]
+[ext_resource type="Script" path="res://scenes/characters/battle_actor.gd" id="2_actor"]
+
+[node name="MonkBattle" instance=ExtResource("1_visual")]
+script = ExtResource("2_actor")
+display_name = "僧侣"
+skill_animation = &"attack2"

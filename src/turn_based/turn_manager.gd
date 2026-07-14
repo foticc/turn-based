@@ -98,7 +98,7 @@ func _run_battle_loop() -> void:
 			turn_started.emit(participant)
 			_log("%s 的回合" % participant.display_name)
 
-			var actions := participant.get_actions()
+			var actions := _get_actions_for(participant)
 			if actions.is_empty():
 				_end_current_turn()
 				continue
@@ -155,12 +155,24 @@ func _build_turn_order() -> void:
 	turn_order = living
 
 
+func _get_actions_for(participant: TurnParticipant) -> Array:
+	if participant is BattleUnit:
+		# 玩家看到全部行动（含冷却/MP 不足的技能，由 UI 禁用）
+		if participant.is_player_controlled():
+			return participant.get_actions()
+		return (participant as BattleUnit).get_usable_actions()
+	return participant.get_actions()
+
+
 func _choose_ai_action(actor: TurnParticipant, actions: Array) -> Dictionary:
 	var attack_action: TurnAction = null
 	var defend_action: TurnAction = null
+	var skill_actions: Array = []
 
 	for action in actions:
-		if action.id == "attack":
+		if action is SkillAction:
+			skill_actions.append(action)
+		elif action.id == "attack":
 			attack_action = action
 		elif action.id == "defend":
 			defend_action = action
@@ -170,14 +182,22 @@ func _choose_ai_action(actor: TurnParticipant, actions: Array) -> Dictionary:
 		if defend_action and unit.hp <= unit.max_hp * 0.3:
 			return {"action": defend_action, "target": actor}
 
+	# 有可用技能时约 50% 概率放技能
+	if not skill_actions.is_empty() and randf() < 0.5:
+		var skill: SkillAction = skill_actions.pick_random()
+		if skill.is_ready(actor):
+			var skill_targets := actor.get_valid_targets(skill, participants)
+			if not skill_targets.is_empty():
+				return {"action": skill, "target": skill_targets.pick_random()}
+
 	if attack_action:
 		var targets := actor.get_valid_targets(attack_action, participants)
 		if not targets.is_empty():
 			return {"action": attack_action, "target": targets.pick_random()}
 
 	for action in actions:
-		if action.target_type == TurnAction.TargetType.NONE:
-			return {"action": action, "target": null}
+		if action.target_type == TurnAction.TargetType.NONE or action.target_type == TurnAction.TargetType.SELF:
+			return {"action": action, "target": actor}
 
 	return {"action": actions[0], "target": null}
 

@@ -1,3 +1,4 @@
+class_name InventoryPanel
 extends PanelContainer
 ## 物品栏面板，显示格子网格并与 Inventory 数据绑定。
 
@@ -5,10 +6,10 @@ signal slot_selected(index: int)
 
 const SLOT_SCENE := preload("res://scenes/ui/inventory_slot_ui.tscn")
 
+@export var columns: int = 8
+
 @onready var grid: GridContainer = $MarginContainer/VBox/GridContainer
 @onready var title_label: Label = $MarginContainer/VBox/TitleLabel
-
-@export var columns: int = 8
 
 var inventory: Inventory
 var _slot_uis: Array[PanelContainer] = []

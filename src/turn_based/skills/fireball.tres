@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkillDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/turn_based/skills/skill_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = "fireball"
+display_name = "火球术"
+mp_cost = 12
+power_multiplier = 2.2
+cooldown_turns = 2
+animation_name = &"attack2"
+animation_duration = 0.55

@@ -2,9 +2,13 @@
 
 [ext_resource type="Script" uid="uid://ct27vd8dmpq5g" path="res://scenes/test/battle_test.gd" id="1_battle"]
 [ext_resource type="Script" uid="uid://cxeuv040ehlfd" path="res://src/turn_based/turn_manager.gd" id="2_manager"]
-[ext_resource type="PackedScene" uid="uid://cqe6mn3ota1t1" path="res://scenes/characters/warrior.tscn" id="3_warrior"]
-[ext_resource type="PackedScene" uid="uid://crjsd0u2hmsvp" path="res://scenes/characters/monk.tscn" id="4_monk"]
-[ext_resource type="Script" uid="uid://dxesxq0daslmb" path="res://scenes/characters/battle_actor.gd" id="5_actor"]
+[ext_resource type="PackedScene" uid="uid://warrior_battle_scene" path="res://scenes/characters/warrior_battle.tscn" id="3_warrior"]
+[ext_resource type="PackedScene" uid="uid://monk_battle_scene" path="res://scenes/characters/monk_battle.tscn" id="4_monk"]
+[ext_resource type="Script" path="res://src/turn_based/skills/skill_definition.gd" id="5_skill_def"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/power_slash.tres" id="6_power_slash"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/smash.tres" id="7_smash"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/thrust.tres" id="8_thrust"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/fireball.tres" id="9_fireball"]
 
 [node name="BattleTest" type="Node2D" unique_id=1874500876]
 script = ExtResource("1_battle")
@@ -25,76 +29,83 @@ position = Vector2(0, 40)
 [node name="Warrior1" parent="BattleField/Players" unique_id=1022469800 instance=ExtResource("3_warrior")]
 position = Vector2(180, 100)
 scale = Vector2(0.8, 0.8)
-script = ExtResource("5_actor")
 unit_id = "warrior_1"
 display_name = "战士·壹"
 team = 0
 max_hp = 120
+max_mp = 40
 attack_power = 18
 speed = 14
 player_controlled = true
 face_right = true
+skills = Array[ExtResource("5_skill_def")]([ExtResource("6_power_slash"), ExtResource("9_fireball"), ExtResource("7_smash"), ExtResource("8_thrust")])
 
 [node name="Enemies" type="Node2D" parent="BattleField" unique_id=1716351874]
 
 [node name="Monk1" parent="BattleField/Enemies" unique_id=1371864121 instance=ExtResource("4_monk")]
 position = Vector2(920, 100)
 scale = Vector2(0.8, 0.8)
-script = ExtResource("5_actor")
 unit_id = "monk_1"
 display_name = "僧侣·壹"
 team = 1
 max_hp = 80
+max_mp = 25
 attack_power = 14
 face_right = false
+skills = Array[ExtResource("5_skill_def")]([ExtResource("6_power_slash"), ExtResource("9_fireball"), ExtResource("7_smash"), ExtResource("8_thrust")])
 
 [node name="Monk2" parent="BattleField/Enemies" unique_id=1575276518 instance=ExtResource("4_monk")]
 position = Vector2(920, 200)
 scale = Vector2(0.8, 0.8)
-script = ExtResource("5_actor")
 unit_id = "monk_2"
 display_name = "僧侣·贰"
 team = 1
 max_hp = 75
+max_mp = 20
 attack_power = 13
 speed = 11
 face_right = false
+skills = Array[ExtResource("5_skill_def")]([ExtResource("6_power_slash"), ExtResource("9_fireball"), ExtResource("7_smash"), ExtResource("8_thrust")])
 
 [node name="Monk3" parent="BattleField/Enemies" unique_id=823981156 instance=ExtResource("4_monk")]
 position = Vector2(920, 300)
 scale = Vector2(0.8, 0.8)
-script = ExtResource("5_actor")
 unit_id = "monk_3"
 display_name = "僧侣·叁"
 team = 1
 max_hp = 90
+max_mp = 30
 attack_power = 12
 speed = 9
 face_right = false
+skills = Array[ExtResource("5_skill_def")]([ExtResource("6_power_slash"), ExtResource("9_fireball"), ExtResource("7_smash"), ExtResource("8_thrust")])
 
 [node name="Monk4" parent="BattleField/Enemies" unique_id=2012094907 instance=ExtResource("4_monk")]
 position = Vector2(920, 400)
 scale = Vector2(0.8, 0.8)
-script = ExtResource("5_actor")
 unit_id = "monk_4"
 display_name = "僧侣·肆"
 team = 1
 max_hp = 70
+max_mp = 22
 attack_power = 15
 speed = 12
 face_right = false
+skills = Array[ExtResource("5_skill_def")]([ExtResource("6_power_slash"), ExtResource("9_fireball"), ExtResource("7_smash"), ExtResource("8_thrust")])
 
 [node name="Monk5" parent="BattleField/Enemies" unique_id=476693682 instance=ExtResource("4_monk")]
 position = Vector2(920, 500)
 scale = Vector2(0.8, 0.8)
-script = ExtResource("5_actor")
 unit_id = "monk_5"
 display_name = "僧侣·伍"
 team = 1
 max_hp = 85
+max_mp = 28
 attack_power = 11
 speed = 8
 face_right = false
+skills = Array[ExtResource("5_skill_def")]([ExtResource("6_power_slash"), ExtResource("9_fireball"), ExtResource("7_smash"), ExtResource("8_thrust")])
+
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=188475823]
 

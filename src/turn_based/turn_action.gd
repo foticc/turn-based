@@ -16,6 +16,10 @@ var display_name: String = "Action"
 var target_type: TargetType = TargetType.NONE
 
 
+func get_button_text() -> String:
+	return display_name
+
+
 func can_execute(_actor: TurnParticipant, _target: TurnParticipant) -> bool:
 	return true
 
