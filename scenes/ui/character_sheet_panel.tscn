@@ -1,0 +1,48 @@
+[gd_scene load_steps=5 format=3 uid="uid://character_sheet_panel"]
+
+[ext_resource type="Script" path="res://scenes/ui/character_sheet_panel.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/character_stats_panel.tscn" id="2_stats"]
+[ext_resource type="PackedScene" path="res://scenes/ui/equipment_panel.tscn" id="3_equip"]
+[ext_resource type="PackedScene" path="res://scenes/ui/inventory_panel.tscn" id="4_inv"]
+
+[node name="CharacterSheetPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(920, 640)
+script = ExtResource("1_script")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeaderLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "角色面板"
+horizontal_alignment = 1
+
+[node name="TipLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "单击选中 | 双击或右键「使用」| 选中装备槽后点「卸下」"
+horizontal_alignment = 1
+
+[node name="TopRow" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 12
+
+[node name="CharacterStatsPanel" parent="Margin/VBox/TopRow" instance=ExtResource("2_stats")]
+layout_mode = 2
+
+[node name="EquipmentPanel" parent="Margin/VBox/TopRow" instance=ExtResource("3_equip")]
+layout_mode = 2
+
+[node name="InventoryPanel" parent="Margin/VBox" instance=ExtResource("4_inv")]
+layout_mode = 2
+size_flags_vertical = 3

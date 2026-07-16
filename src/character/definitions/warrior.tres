@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/character/character_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = "warrior"
+display_name = "勇者"
+description = "擅长近战与物理输出的战士型角色。"
+base_max_hp = 120
+base_max_mp = 30
+base_attack = 14
+base_defense = 3
+base_speed = 11
+hp_growth = 14
+mp_growth = 3
+attack_growth = 3
+defense_growth = 1
+speed_growth = 1
+exp_base = 100
+exp_growth = 1.25

@@ -6,6 +6,7 @@ var mp_cost: int = 0
 var power_multiplier: float = 1.5
 var cooldown_turns: int = 0
 var current_cooldown: int = 0
+var description: String = ""
 ## 对应 AnimatedSprite2D 的动画名，默认 attack2
 var animation_name: StringName = &"attack2"
 var animation_duration: float = 0.5
@@ -18,7 +19,8 @@ func _init(
 	multiplier: float = 1.5,
 	cooldown: int = 0,
 	anim_name: StringName = &"attack2",
-	anim_duration: float = 0.5
+	anim_duration: float = 0.5,
+	skill_description: String = ""
 ) -> void:
 	id = skill_id
 	display_name = skill_name
@@ -28,6 +30,7 @@ func _init(
 	cooldown_turns = cooldown
 	animation_name = anim_name
 	animation_duration = anim_duration
+	description = skill_description
 
 
 static func from_definition(def: SkillDefinition) -> SkillAction:
@@ -38,7 +41,8 @@ static func from_definition(def: SkillDefinition) -> SkillAction:
 		def.power_multiplier,
 		def.cooldown_turns,
 		def.animation_name,
-		def.animation_duration
+		def.animation_duration,
+		def.description
 	)
 
 
@@ -49,6 +53,21 @@ func get_button_text() -> String:
 	if current_cooldown > 0:
 		parts.append("CD%d" % current_cooldown)
 	return " ".join(parts)
+
+
+func get_tooltip_text() -> String:
+	var lines: PackedStringArray = [display_name]
+	if description.strip_edges() != "":
+		lines.append(description)
+	lines.append("MP消耗: %d" % mp_cost)
+	lines.append("伤害倍率: %.1fx" % power_multiplier)
+	if cooldown_turns > 0:
+		lines.append("冷却: %d 回合" % cooldown_turns)
+	else:
+		lines.append("冷却: 无")
+	if current_cooldown > 0:
+		lines.append("剩余冷却: %d" % current_cooldown)
+	return "\n".join(lines)
 
 
 func is_ready(actor: TurnParticipant) -> bool:

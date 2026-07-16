@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://ddgb6ljhwq1bp"]
+
+[ext_resource type="Script" uid="uid://dqddmdjkxti83" path="res://scenes/test/world_battle_test.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://b6nwdxlrvdr16" path="res://scenes/map/novice_village.tscn" id="2_map"]
+[ext_resource type="PackedScene" path="res://scenes/characters/warrior_world.tscn" id="3_player"]
+[ext_resource type="PackedScene" path="res://scenes/characters/world_enemy.tscn" id="4_enemy"]
+[ext_resource type="PackedScene" path="res://scenes/battle/encounter_battle.tscn" id="5_battle"]
+
+[node name="WorldBattleTest" type="Node2D" unique_id=1128910442]
+script = ExtResource("1_script")
+
+[node name="NoviceVillage" parent="." unique_id=831062619 instance=ExtResource("2_map")]
+
+[node name="Entities" type="Node2D" parent="." unique_id=709249824]
+
+[node name="Player" parent="Entities" unique_id=255266417 instance=ExtResource("3_player")]
+position = Vector2(280, 280)
+
+[node name="Enemies" type="Node2D" parent="Entities" unique_id=2135590498]
+
+[node name="Enemy1" parent="Entities/Enemies" unique_id=1922829930 instance=ExtResource("4_enemy")]
+position = Vector2(620, 220)
+enemy_name = "僧侣·甲"
+max_hp = 60
+attack_power = 10
+speed = 11
+
+[node name="Enemy2" parent="Entities/Enemies" unique_id=2144939645 instance=ExtResource("4_enemy")]
+position = Vector2(780, 360)
+enemy_name = "僧侣·乙"
+max_hp = 75
+attack_power = 13
+speed = 9
+
+[node name="Enemy3" parent="Entities/Enemies" unique_id=895150606 instance=ExtResource("4_enemy")]
+position = Vector2(480, 420)
+enemy_name = "僧侣·丙"
+max_hp = 80
+max_mp = 25
+attack_power = 14
+
+[node name="Enemy4" parent="Entities/Enemies" unique_id=1938483566 instance=ExtResource("4_enemy")]
+position = Vector2(900, 250)
+enemy_name = "僧侣·丁"
+max_hp = 90
+max_mp = 30
+attack_power = 15
+speed = 8
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(280, 280)
+zoom = Vector2(1.2, 1.2)
+position_smoothing_enabled = true
+position_smoothing_speed = 6.0
+limit_smoothed = true
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=818334270]
+
+[node name="TipLabel" type="Label" parent="UI" unique_id=1162472638]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 12.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 0.85, 1)
+theme_override_font_sizes/font_size = 18
+text = "点击地面移动，碰到敌人进入战斗"
+horizontal_alignment = 1
+
+[node name="EncounterBattle" parent="." unique_id=1651190769 instance=ExtResource("5_battle")]

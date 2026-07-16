@@ -1,0 +1,58 @@
+[gd_resource type="Resource" script_class="SkillTreeDefinition" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://src/skill_tree/skill_tree_definition.gd" id="1_tree"]
+[ext_resource type="Script" path="res://src/skill_tree/skill_tree_node_definition.gd" id="2_node"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/power_slash.tres" id="3_power"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/smash.tres" id="4_smash"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/thrust.tres" id="5_thrust"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/fireball.tres" id="6_fire"]
+
+[sub_resource type="Resource" id="Node_power"]
+script = ExtResource("2_node")
+id = "power_slash"
+display_name = "强力斩"
+description = "战士基础技：高倍率单体斩击。开局已掌握。"
+skill = ExtResource("3_power")
+point_cost = 0
+prerequisite_ids = PackedStringArray()
+ui_position = Vector2(320, 60)
+unlocked_by_default = true
+
+[sub_resource type="Resource" id="Node_smash"]
+script = ExtResource("2_node")
+id = "smash"
+display_name = "重砸"
+description = "需要「强力斩」。沉重一击，冷却 1 回合。"
+skill = ExtResource("4_smash")
+point_cost = 1
+prerequisite_ids = PackedStringArray("power_slash")
+ui_position = Vector2(140, 220)
+unlocked_by_default = false
+
+[sub_resource type="Resource" id="Node_thrust"]
+script = ExtResource("2_node")
+id = "thrust"
+display_name = "突刺"
+description = "需要「强力斩」。快速突刺，无冷却。"
+skill = ExtResource("5_thrust")
+point_cost = 1
+prerequisite_ids = PackedStringArray("power_slash")
+ui_position = Vector2(500, 220)
+unlocked_by_default = false
+
+[sub_resource type="Resource" id="Node_fire"]
+script = ExtResource("2_node")
+id = "fireball"
+display_name = "火球术"
+description = "需要「突刺」。高倍率火球，冷却 2 回合。"
+skill = ExtResource("6_fire")
+point_cost = 2
+prerequisite_ids = PackedStringArray("thrust")
+ui_position = Vector2(500, 380)
+unlocked_by_default = false
+
+[resource]
+script = ExtResource("1_tree")
+id = "warrior_tree"
+display_name = "战士技能树"
+nodes = Array[ExtResource("2_node")]([SubResource("Node_power"), SubResource("Node_smash"), SubResource("Node_thrust"), SubResource("Node_fire")])

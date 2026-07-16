@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/character/character_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = "mage"
+display_name = "法师"
+description = "魔力充沛，攻击高但生命与防御偏低。"
+base_max_hp = 80
+base_max_mp = 50
+base_attack = 18
+base_defense = 1
+base_speed = 9
+hp_growth = 8
+mp_growth = 8
+attack_growth = 4
+defense_growth = 0
+speed_growth = 1
+exp_base = 100
+exp_growth = 1.25

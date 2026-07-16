@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://equipment_panel"]
+
+[ext_resource type="Script" path="res://scenes/ui/equipment_panel.gd" id="1_script"]
+
+[node name="EquipmentPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(340, 320)
+script = ExtResource("1_script")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "装备栏"
+horizontal_alignment = 1
+
+[node name="SlotsGrid" type="GridContainer" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 3

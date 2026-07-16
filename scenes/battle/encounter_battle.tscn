@@ -1,0 +1,92 @@
+[gd_scene load_steps=3 format=3 uid="uid://encounter_battle_overlay"]
+
+[ext_resource type="Script" path="res://scenes/battle/encounter_battle.gd" id="1_script"]
+[ext_resource type="Script" path="res://src/turn_based/turn_manager.gd" id="2_manager"]
+
+[node name="EncounterBattle" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_script")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0.05, 0.05, 0.08, 0.72)
+
+[node name="BattleRoot" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="TurnManager" type="Node" parent="BattleRoot"]
+script = ExtResource("2_manager")
+
+[node name="BattleField" type="Node2D" parent="BattleRoot"]
+
+[node name="Players" type="Node2D" parent="BattleRoot/BattleField"]
+
+[node name="Enemies" type="Node2D" parent="BattleRoot/BattleField"]
+
+[node name="UI" type="Control" parent="BattleRoot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="BattleRoot/UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="BattleRoot/UI/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="BattleRoot/UI/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "遇敌战斗"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="BattleRoot/UI/MarginContainer/VBox"]
+layout_mode = 2
+text = "等待开始..."
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="BattleRoot/UI/MarginContainer/VBox"]
+custom_minimum_size = Vector2(0, 360)
+layout_mode = 2
+
+[node name="ActionPanel" type="HBoxContainer" parent="BattleRoot/UI/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="TargetPanel" type="HBoxContainer" parent="BattleRoot/UI/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="LogLabel" type="RichTextLabel" parent="BattleRoot/UI/MarginContainer/VBox"]
+custom_minimum_size = Vector2(0, 110)
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true

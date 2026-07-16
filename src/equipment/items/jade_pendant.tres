@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/inventory/item_definition.gd" id="1_item"]
+
+[resource]
+script = ExtResource("1_item")
+id = "jade_pendant"
+display_name = "青玉佩"
+description = "温润玉佩，略增魔力。"
+item_type = 1
+max_stack = 1
+equip_slot = 6
+bonus_max_mp = 12
+bonus_attack = 1

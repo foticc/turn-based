@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=3 uid="uid://world_enemy_monk"]
+
+[ext_resource type="Script" path="res://scenes/characters/world_enemy.gd" id="1_enemy"]
+[ext_resource type="PackedScene" uid="uid://crjsd0u2hmsvp" path="res://scenes/characters/monk.tscn" id="2_monk"]
+[ext_resource type="Script" path="res://src/turn_based/skills/skill_definition.gd" id="3_skill_def"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/thrust.tres" id="4_thrust"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/smash.tres" id="5_smash"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_trigger"]
+radius = 36.0
+
+[node name="WorldEnemy" type="Area2D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_enemy")
+enemy_name = "僧侣"
+max_hp = 70
+max_mp = 20
+attack_power = 12
+speed = 10
+skills = Array[ExtResource("3_skill_def")]([ExtResource("4_thrust"), ExtResource("5_smash")])
+
+[node name="Visual" parent="." instance=ExtResource("2_monk")]
+scale = Vector2(0.55, 0.55)
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_trigger")
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -40.0
+offset_top = -70.0
+offset_right = 40.0
+offset_bottom = -50.0
+text = "敌人"
+horizontal_alignment = 1

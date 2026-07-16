@@ -6,6 +6,7 @@
 script = ExtResource("1_def")
 id = "fireball"
 display_name = "火球术"
+description = "凝聚火焰化为火球砸向敌人，伤害很高但消耗与冷却也更大。"
 mp_cost = 12
 power_multiplier = 2.2
 cooldown_turns = 2

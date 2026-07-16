@@ -18,7 +18,7 @@ func _ready() -> void:
 	_setup_inventory_panel()
 	_connect_buttons()
 	_refresh_stats()
-	_append_log("[color=yellow]物品栏测试已就绪[/color]")
+	_append_log("[color=yellow]物品栏测试已就绪：双击或右键可「使用」[/color]")
 
 
 func _setup_items() -> void:
@@ -64,6 +64,7 @@ func _setup_inventory_panel() -> void:
 	inventory_panel.bind(inventory)
 	inventory_panel.set_title("背包 (%d 格)" % inventory.capacity)
 	inventory_panel.slot_selected.connect(_on_slot_selected)
+	inventory_panel.use_requested.connect(_on_use_requested)
 	inventory.item_used.connect(_on_item_used)
 
 	inventory.add_item(_items["health_potion"], 3)
@@ -104,7 +105,14 @@ func _use_selected() -> void:
 	if index < 0:
 		_append_log("[color=gray]请先选择一个格子[/color]")
 		return
+	_use_item_at(index)
 
+
+func _on_use_requested(index: int) -> void:
+	_use_item_at(index)
+
+
+func _use_item_at(index: int) -> void:
 	var result: Dictionary = inventory.use_item_at(index)
 	if result.success:
 		if result.heal > 0:

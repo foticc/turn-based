@@ -6,6 +6,7 @@
 script = ExtResource("1_def")
 id = "power_slash"
 display_name = "强力斩"
+description = "蓄力挥砍，对单体敌人造成较高物理伤害。"
 mp_cost = 8
 power_multiplier = 1.8
 cooldown_turns = 1

@@ -3,6 +3,8 @@ extends PanelContainer
 ## 物品栏面板，显示格子网格并与 Inventory 数据绑定。
 
 signal slot_selected(index: int)
+## 右键菜单「使用」或双击物品时发出
+signal use_requested(index: int)
 
 const SLOT_SCENE := preload("res://scenes/ui/inventory_slot_ui.tscn")
 
@@ -14,6 +16,15 @@ const SLOT_SCENE := preload("res://scenes/ui/inventory_slot_ui.tscn")
 var inventory: Inventory
 var _slot_uis: Array[PanelContainer] = []
 var _selected_index: int = -1
+var _context_menu: PopupMenu
+var _context_slot_index: int = -1
+
+
+func _ready() -> void:
+	_context_menu = PopupMenu.new()
+	_context_menu.name = "ContextMenu"
+	add_child(_context_menu)
+	_context_menu.id_pressed.connect(_on_context_menu_id_pressed)
 
 
 func bind(target_inventory: Inventory) -> void:
@@ -53,6 +64,8 @@ func _build_slots() -> void:
 		var slot_ui: PanelContainer = SLOT_SCENE.instantiate()
 		slot_ui.slot_index = i
 		slot_ui.slot_clicked.connect(_on_slot_clicked)
+		slot_ui.slot_right_clicked.connect(_on_slot_right_clicked)
+		slot_ui.slot_double_clicked.connect(_on_slot_double_clicked)
 		grid.add_child(slot_ui)
 		_slot_uis.append(slot_ui)
 
@@ -74,3 +87,47 @@ func _on_slot_clicked(index: int) -> void:
 	_selected_index = index
 	slot_selected.emit(index)
 	_refresh()
+
+
+func _on_slot_double_clicked(index: int) -> void:
+	_selected_index = index
+	slot_selected.emit(index)
+	_refresh()
+	if inventory == null:
+		return
+	if inventory.get_slot(index).is_empty():
+		return
+	use_requested.emit(index)
+
+
+func _on_slot_right_clicked(index: int) -> void:
+	_selected_index = index
+	slot_selected.emit(index)
+	_refresh()
+
+	if inventory == null:
+		return
+	var slot_data := inventory.get_slot(index)
+	if slot_data.is_empty():
+		return
+
+	_context_slot_index = index
+	var item: ItemDefinition = slot_data.item
+	_context_menu.clear()
+	_context_menu.add_item(_get_use_action_text(item), 0)
+	_context_menu.position = Vector2i(get_global_mouse_position())
+	_context_menu.popup()
+
+
+func _get_use_action_text(item: ItemDefinition) -> String:
+	if item.is_equipment():
+		return "使用（装备）"
+	if item.item_type == ItemDefinition.ItemType.CONSUMABLE:
+		return "使用"
+	return "使用"
+
+
+func _on_context_menu_id_pressed(id: int) -> void:
+	if id != 0 or _context_slot_index < 0:
+		return
+	use_requested.emit(_context_slot_index)

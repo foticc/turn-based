@@ -84,11 +84,20 @@ func _show_skill_list() -> void:
 	for skill in unit.get_skills():
 		var btn := Button.new()
 		btn.text = skill.get_button_text()
-		btn.disabled = not skill.is_ready(_participant)
-		btn.pressed.connect(_on_action_picked.bind(skill))
+		btn.tooltip_text = skill.get_tooltip_text()
+		var ready := skill.is_ready(_participant)
+		# 不用 disabled，否则 tip 不显示；未就绪时点击无效
+		btn.modulate = Color.WHITE if ready else Color(0.65, 0.65, 0.7)
+		btn.pressed.connect(_on_skill_button_pressed.bind(skill, ready))
 		_action_panel.add_child(btn)
 
 	_add_button(_action_panel, "返回", _show_main_commands)
+
+
+func _on_skill_button_pressed(skill: SkillAction, ready: bool) -> void:
+	if not ready:
+		return
+	_on_action_picked(skill)
 
 
 func _on_action_picked(action: TurnAction) -> void:

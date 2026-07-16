@@ -6,6 +6,7 @@
 script = ExtResource("1_def")
 id = "smash"
 display_name = "重砸"
+description = "高举武器猛砸地面附近的敌人，伤害稳定。"
 mp_cost = 6
 power_multiplier = 1.6
 cooldown_turns = 1

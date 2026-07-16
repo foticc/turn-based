@@ -8,13 +8,24 @@ extends CharacterBody2D
 
 var _target_position: Vector2
 var _has_target: bool = false
+var _movement_enabled: bool = true
 
 
 func _ready() -> void:
 	_target_position = global_position
 
 
+func set_movement_enabled(enabled: bool) -> void:
+	_movement_enabled = enabled
+	if not enabled:
+		_has_target = false
+		velocity = Vector2.ZERO
+		_set_animation(&"idle")
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	if not _movement_enabled:
+		return
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
@@ -23,6 +34,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	if not _movement_enabled:
+		velocity = Vector2.ZERO
+		return
 	if not _has_target:
 		_set_animation(&"idle")
 		return

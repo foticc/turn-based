@@ -1,0 +1,80 @@
+[gd_scene format=3 uid="uid://b3bjxeep86qfy"]
+
+[ext_resource type="Script" uid="uid://8loqycpbe6so" path="res://scenes/test/skill_tree_test.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/skill_tree_panel.tscn" id="2_panel"]
+
+[node name="SkillTreeTest" type="Control" unique_id=396343322]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1678761241]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12, 0.14, 0.18, 1)
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=2105559485]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="Margin" unique_id=925752198]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TipLabel" type="Label" parent="Margin/VBox" unique_id=260458776]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "绿色=已解锁 | 黄色=可解锁 | 灰色=未满足条件。鼠标悬停查看技能介绍，点击节点解锁。"
+horizontal_alignment = 1
+
+[node name="HBox" type="HBoxContainer" parent="Margin/VBox" unique_id=2000954936]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="SkillTreePanel" parent="Margin/VBox/HBox" unique_id=1305722840 instance=ExtResource("2_panel")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Side" type="VBoxContainer" parent="Margin/VBox/HBox" unique_id=1326011924]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AddPointButton" type="Button" parent="Margin/VBox/HBox/Side" unique_id=225945695]
+layout_mode = 2
+text = "+1 技能点"
+
+[node name="ResetButton" type="Button" parent="Margin/VBox/HBox/Side" unique_id=2135168458]
+layout_mode = 2
+text = "重置技能树"
+
+[node name="UnlockedLabel" type="RichTextLabel" parent="Margin/VBox/HBox/Side" unique_id=979550126]
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+bbcode_enabled = true
+text = "已解锁技能"
+fit_content = true
+
+[node name="LogLabel" type="RichTextLabel" parent="Margin/VBox/HBox/Side" unique_id=1888018632]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true
