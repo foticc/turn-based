@@ -17,10 +17,11 @@ var inventory: Inventory
 
 
 func _ready() -> void:
-	tip_label.text = "单击选中 | 双击或右键「使用」| 选中装备槽后点「卸下」"
+	tip_label.text = "悬停查看详情 | 背包：双击/右键使用 | 装备槽：双击/右键卸下"
 	inventory_panel.use_requested.connect(_on_inventory_use_requested)
 	inventory_panel.slot_selected.connect(_on_inventory_slot_selected)
 	equipment_panel.slot_clicked.connect(_on_equipment_slot_clicked)
+	equipment_panel.unequip_requested.connect(_on_equipment_unequip_requested)
 
 
 func bind(
@@ -58,12 +59,17 @@ func use_selected_inventory_item() -> void:
 
 
 func unequip_selected_slot() -> void:
-	if equipment == null or inventory == null:
-		return
-
 	var slot := equipment_panel.get_selected_slot()
 	if slot == ItemDefinition.EquipSlot.NONE:
 		_log("[color=gray]请先选中一个装备槽[/color]")
+		return
+	_unequip_slot(slot)
+
+
+func _unequip_slot(slot: ItemDefinition.EquipSlot) -> void:
+	if equipment == null or inventory == null:
+		return
+	if slot == ItemDefinition.EquipSlot.NONE:
 		return
 
 	var item := equipment.unequip(slot)
@@ -95,6 +101,10 @@ func _on_equipment_slot_clicked(slot: ItemDefinition.EquipSlot) -> void:
 		_log("选中装备槽：%s（%s）" % [slot_name, item.display_name])
 	else:
 		_log("选中装备槽：%s（空）" % slot_name)
+
+
+func _on_equipment_unequip_requested(slot: ItemDefinition.EquipSlot) -> void:
+	_unequip_slot(slot)
 
 
 func _use_inventory_item(index: int) -> void:

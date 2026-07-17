@@ -34,8 +34,8 @@ func _refresh() -> void:
 
 	title_label.text = "%s  Lv.%d" % [stats.get_display_name(), stats.level]
 	exp_bar.max_value = maxf(stats.get_exp_to_next_level(), 1)
-	exp_bar.value = stats.exp
-	exp_label.text = "经验 %d / %d" % [stats.exp, stats.get_exp_to_next_level()]
+	exp_bar.value = stats.experience
+	exp_label.text = "经验 %d / %d" % [stats.experience, stats.get_exp_to_next_level()]
 
 	var lines: PackedStringArray = []
 	lines.append("[b]生命[/b]  %d / %d" % [stats.hp, stats.get_total_max_hp()])

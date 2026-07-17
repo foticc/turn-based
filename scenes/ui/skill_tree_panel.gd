@@ -157,32 +157,32 @@ func _show_detail(node_id: String) -> void:
 
 
 func _build_node_tooltip(node_def: SkillTreeNodeDefinition) -> String:
-	var lines: PackedStringArray = []
+	var tip_lines: PackedStringArray = []
 	if node_def.skill:
-		lines.append(node_def.skill.get_tooltip_text())
+		tip_lines.append(node_def.skill.get_tooltip_text())
 	else:
-		lines.append(node_def.display_name)
+		tip_lines.append(node_def.display_name)
 		if node_def.description.strip_edges() != "":
-			lines.append(node_def.description)
+			tip_lines.append(node_def.description)
 
 	if node_def.description.strip_edges() != "" and node_def.skill:
 		# 节点额外说明（与技能描述不同时补充）
 		if node_def.description != node_def.skill.description:
-			lines.append("")
-			lines.append(node_def.description)
+			tip_lines.append("")
+			tip_lines.append(node_def.description)
 
 	if skill_tree:
 		if skill_tree.is_unlocked(node_def.id):
-			lines.append("")
-			lines.append("状态: 已解锁")
+			tip_lines.append("")
+			tip_lines.append("状态: 已解锁")
 		elif skill_tree.can_unlock(node_def.id):
-			lines.append("")
-			lines.append("状态: 可解锁（消耗 %d 点）" % node_def.point_cost)
+			tip_lines.append("")
+			tip_lines.append("状态: 可解锁（消耗 %d 点）" % node_def.point_cost)
 		else:
-			lines.append("")
-			lines.append("状态: %s" % _unlock_fail_reason(node_def.id))
+			tip_lines.append("")
+			tip_lines.append("状态: %s" % _unlock_fail_reason(node_def.id))
 
-	return "\n".join(lines)
+	return "\n".join(tip_lines)
 
 
 func _unlock_fail_reason(node_id: String) -> String:
@@ -194,6 +194,6 @@ func _unlock_fail_reason(node_id: String) -> String:
 	for prereq in node_def.prerequisite_ids:
 		if not skill_tree.is_unlocked(prereq):
 			var prereq_node := skill_tree.definition.get_node(prereq)
-			var name := prereq_node.display_name if prereq_node else prereq
-			return "需要先解锁：%s" % name
+			var prereq_name := prereq_node.display_name if prereq_node else prereq
+			return "需要先解锁：%s" % prereq_name
 	return "无法解锁"

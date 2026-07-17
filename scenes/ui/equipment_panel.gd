@@ -3,6 +3,7 @@ extends PanelContainer
 ## 装备栏面板：武器、头冠、衣服、鞋子、腰带、玉佩、项链、双手镯。
 
 signal slot_clicked(slot: ItemDefinition.EquipSlot)
+signal unequip_requested(slot: ItemDefinition.EquipSlot)
 
 @onready var title_label: Label = $Margin/VBox/TitleLabel
 @onready var slots_grid: GridContainer = $Margin/VBox/SlotsGrid
@@ -10,6 +11,7 @@ signal slot_clicked(slot: ItemDefinition.EquipSlot)
 var equipment: Equipment
 var _selected_slot: ItemDefinition.EquipSlot = ItemDefinition.EquipSlot.NONE
 var _slot_buttons: Dictionary = {}
+var _slot_items: Dictionary = {} # EquipSlot -> ItemDefinition
 
 
 func _ready() -> void:
@@ -21,6 +23,7 @@ func _build_slot_buttons() -> void:
 	for child in slots_grid.get_children():
 		child.queue_free()
 	_slot_buttons.clear()
+	_slot_items.clear()
 
 	for slot in [
 		ItemDefinition.EquipSlot.WEAPON,
@@ -37,6 +40,9 @@ func _build_slot_buttons() -> void:
 		btn.custom_minimum_size = Vector2(100, 72)
 		btn.focus_mode = Control.FOCUS_NONE
 		btn.pressed.connect(_on_slot_pressed.bind(slot))
+		btn.gui_input.connect(_on_slot_gui_input.bind(slot))
+		btn.mouse_entered.connect(_on_slot_mouse_entered.bind(slot))
+		btn.mouse_exited.connect(_on_slot_mouse_exited)
 		slots_grid.add_child(btn)
 		_slot_buttons[slot] = btn
 
@@ -60,9 +66,45 @@ func get_selected_slot() -> ItemDefinition.EquipSlot:
 
 
 func _on_slot_pressed(slot: ItemDefinition.EquipSlot) -> void:
+	ItemTooltip.hide_tooltip()
 	_selected_slot = slot
 	slot_clicked.emit(slot)
 	_refresh()
+
+
+func _on_slot_gui_input(event: InputEvent, slot: ItemDefinition.EquipSlot) -> void:
+	if event is not InputEventMouseButton:
+		return
+	var mouse_event := event as InputEventMouseButton
+	if not mouse_event.pressed:
+		return
+
+	if mouse_event.button_index == MOUSE_BUTTON_RIGHT:
+		ItemTooltip.hide_tooltip()
+		_selected_slot = slot
+		_refresh()
+		if _slot_items.get(slot) != null:
+			unequip_requested.emit(slot)
+		accept_event()
+	elif mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.double_click:
+		ItemTooltip.hide_tooltip()
+		_selected_slot = slot
+		_refresh()
+		if _slot_items.get(slot) != null:
+			unequip_requested.emit(slot)
+		accept_event()
+
+
+func _on_slot_mouse_entered(slot: ItemDefinition.EquipSlot) -> void:
+	var item: ItemDefinition = _slot_items.get(slot)
+	if item:
+		ItemTooltip.request_show(item, "双击或右键卸下")
+	else:
+		ItemTooltip.hide_tooltip()
+
+
+func _on_slot_mouse_exited() -> void:
+	ItemTooltip.hide_tooltip()
 
 
 func _refresh() -> void:
@@ -71,13 +113,15 @@ func _refresh() -> void:
 		var item: ItemDefinition = null
 		if equipment:
 			item = equipment.get_equipped(slot)
+		_slot_items[slot] = item
 
 		var slot_name := ItemDefinition.get_slot_display_name(slot)
+		btn.tooltip_text = ""
+		btn.icon = item.icon if item else null
+		btn.expand_icon = true
 		if item:
 			btn.text = "%s\n%s" % [slot_name, item.display_name]
-			btn.tooltip_text = item.get_tooltip_text()
 			btn.modulate = Color(1.0, 0.95, 0.7) if slot == _selected_slot else Color.WHITE
 		else:
 			btn.text = "%s\n（空）" % slot_name
-			btn.tooltip_text = "%s 槽位" % slot_name
 			btn.modulate = Color(0.75, 0.75, 0.8) if slot == _selected_slot else Color(0.9, 0.9, 0.9)

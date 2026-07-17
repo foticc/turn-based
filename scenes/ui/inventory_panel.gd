@@ -93,6 +93,7 @@ func _on_slot_double_clicked(index: int) -> void:
 	_selected_index = index
 	slot_selected.emit(index)
 	_refresh()
+	ItemTooltip.hide_tooltip()
 	if inventory == null:
 		return
 	if inventory.get_slot(index).is_empty():
@@ -104,6 +105,7 @@ func _on_slot_right_clicked(index: int) -> void:
 	_selected_index = index
 	slot_selected.emit(index)
 	_refresh()
+	ItemTooltip.hide_tooltip()
 
 	if inventory == null:
 		return

@@ -29,5 +29,5 @@ func is_player_controlled() -> bool:
 	return false
 
 
-func get_valid_targets(_action: TurnAction, all_participants: Array) -> Array:
+func get_valid_targets(_action: TurnAction, _all_participants: Array) -> Array:
 	return []

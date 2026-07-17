@@ -8,7 +8,7 @@ signal died
 
 var definition: CharacterDefinition
 var level: int = 1
-var exp: int = 0
+var experience: int = 0
 
 var max_hp: int = 100
 var hp: int = 100
@@ -35,7 +35,7 @@ func _init(def: CharacterDefinition = null, start_level: int = 1) -> void:
 func apply_definition(def: CharacterDefinition, start_level: int = 1) -> void:
 	definition = def
 	level = maxi(start_level, 1)
-	exp = 0
+	experience = 0
 	_recalc_base_stats()
 	hp = max_hp
 	mp = max_mp
@@ -77,15 +77,15 @@ func get_exp_progress() -> float:
 	var need := get_exp_to_next_level()
 	if need <= 0:
 		return 1.0
-	return clampf(float(exp) / float(need), 0.0, 1.0)
+	return clampf(float(experience) / float(need), 0.0, 1.0)
 
 
 func add_exp(amount: int) -> void:
 	if amount <= 0 or not is_alive:
 		return
-	exp += amount
-	while exp >= get_exp_to_next_level() and get_exp_to_next_level() > 0:
-		exp -= get_exp_to_next_level()
+	experience += amount
+	while experience >= get_exp_to_next_level() and get_exp_to_next_level() > 0:
+		experience -= get_exp_to_next_level()
 		_level_up()
 	changed.emit()
 
@@ -184,7 +184,7 @@ func get_summary_lines() -> PackedStringArray:
 	var lines: PackedStringArray = [
 		"名称: %s" % get_display_name(),
 		"等级: %d" % level,
-		"经验: %d / %d" % [exp, get_exp_to_next_level()],
+		"经验: %d / %d" % [experience, get_exp_to_next_level()],
 		"生命: %d / %d" % [hp, get_total_max_hp()],
 		"魔力: %d / %d" % [mp, get_total_max_mp()],
 		"攻击: %d (%d + %d)" % [get_total_attack(), attack, bonus_attack],

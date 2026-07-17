@@ -5,41 +5,50 @@
 [ext_resource type="PackedScene" path="res://scenes/characters/warrior_world.tscn" id="3_player"]
 [ext_resource type="PackedScene" path="res://scenes/characters/world_enemy.tscn" id="4_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/battle/encounter_battle.tscn" id="5_battle"]
+[ext_resource type="Script" uid="uid://dosy2f6fewrfm" path="res://src/inventory/inventory.gd" id="6_inventory"]
+[ext_resource type="PackedScene" path="res://scenes/ui/character_stats_panel.tscn" id="7_stats"]
+[ext_resource type="PackedScene" path="res://scenes/ui/equipment_panel.tscn" id="8_equip"]
+[ext_resource type="PackedScene" uid="uid://oo25b76c1rp8" path="res://scenes/ui/inventory_panel.tscn" id="9_inv"]
+[ext_resource type="PackedScene" path="res://scenes/ui/skill_tree_panel.tscn" id="10_skill"]
 
-[node name="WorldBattleTest" type="Node2D" unique_id=1128910442]
+[node name="WorldBattleTest" type="Node2D" unique_id=751670776]
 script = ExtResource("1_script")
 
-[node name="NoviceVillage" parent="." unique_id=831062619 instance=ExtResource("2_map")]
+[node name="Inventory" type="Node" parent="." unique_id=2054536219]
+script = ExtResource("6_inventory")
+capacity = 24
 
-[node name="Entities" type="Node2D" parent="." unique_id=709249824]
+[node name="NoviceVillage" parent="." unique_id=1603254419 instance=ExtResource("2_map")]
 
-[node name="Player" parent="Entities" unique_id=255266417 instance=ExtResource("3_player")]
+[node name="Entities" type="Node2D" parent="." unique_id=516747436]
+
+[node name="Player" parent="Entities" unique_id=1524129846 instance=ExtResource("3_player")]
 position = Vector2(280, 280)
 
-[node name="Enemies" type="Node2D" parent="Entities" unique_id=2135590498]
+[node name="Enemies" type="Node2D" parent="Entities" unique_id=1024338245]
 
-[node name="Enemy1" parent="Entities/Enemies" unique_id=1922829930 instance=ExtResource("4_enemy")]
+[node name="Enemy1" parent="Entities/Enemies" unique_id=1977629365 instance=ExtResource("4_enemy")]
 position = Vector2(620, 220)
 enemy_name = "僧侣·甲"
 max_hp = 60
 attack_power = 10
 speed = 11
 
-[node name="Enemy2" parent="Entities/Enemies" unique_id=2144939645 instance=ExtResource("4_enemy")]
+[node name="Enemy2" parent="Entities/Enemies" unique_id=89297757 instance=ExtResource("4_enemy")]
 position = Vector2(780, 360)
 enemy_name = "僧侣·乙"
 max_hp = 75
 attack_power = 13
 speed = 9
 
-[node name="Enemy3" parent="Entities/Enemies" unique_id=895150606 instance=ExtResource("4_enemy")]
+[node name="Enemy3" parent="Entities/Enemies" unique_id=1908797572 instance=ExtResource("4_enemy")]
 position = Vector2(480, 420)
 enemy_name = "僧侣·丙"
 max_hp = 80
 max_mp = 25
 attack_power = 14
 
-[node name="Enemy4" parent="Entities/Enemies" unique_id=1938483566 instance=ExtResource("4_enemy")]
+[node name="Enemy4" parent="Entities/Enemies" unique_id=981153741 instance=ExtResource("4_enemy")]
 position = Vector2(900, 250)
 enemy_name = "僧侣·丁"
 max_hp = 90
@@ -47,16 +56,16 @@ max_mp = 30
 attack_power = 15
 speed = 8
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=628860802]
 position = Vector2(280, 280)
 zoom = Vector2(1.2, 1.2)
+limit_smoothed = true
 position_smoothing_enabled = true
 position_smoothing_speed = 6.0
-limit_smoothed = true
 
-[node name="UI" type="CanvasLayer" parent="." unique_id=818334270]
+[node name="UI" type="CanvasLayer" parent="." unique_id=2060358827]
 
-[node name="TipLabel" type="Label" parent="UI" unique_id=1162472638]
+[node name="TipLabel" type="Label" parent="UI" unique_id=1280996796]
 anchors_preset = 10
 anchor_right = 1.0
 offset_top = 12.0
@@ -67,4 +76,171 @@ theme_override_font_sizes/font_size = 18
 text = "点击地面移动，碰到敌人进入战斗"
 horizontal_alignment = 1
 
-[node name="EncounterBattle" parent="." unique_id=1651190769 instance=ExtResource("5_battle")]
+[node name="Overlay" type="Control" parent="UI" unique_id=415567524]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dimmer" type="ColorRect" parent="UI/Overlay" unique_id=1888865665]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.55)
+
+[node name="StatsWindow" type="VBoxContainer" parent="UI/Overlay" unique_id=546326814]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -220.0
+offset_right = 200.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="UI/Overlay/StatsWindow" unique_id=1482716289]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="UI/Overlay/StatsWindow/Header" unique_id=1012566618]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.95, 0.8, 1)
+theme_override_font_sizes/font_size = 18
+text = "角色详情"
+
+[node name="CloseButton" type="Button" parent="UI/Overlay/StatsWindow/Header" unique_id=94527856]
+custom_minimum_size = Vector2(72, 0)
+layout_mode = 2
+focus_mode = 0
+text = "关闭"
+
+[node name="CharacterStatsPanel" parent="UI/Overlay/StatsWindow" unique_id=787566504 instance=ExtResource("7_stats")]
+layout_mode = 2
+
+[node name="BagWindow" type="VBoxContainer" parent="UI/Overlay" unique_id=1120435263]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -340.0
+offset_right = 480.0
+offset_bottom = 340.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="UI/Overlay/BagWindow" unique_id=1160970292]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="UI/Overlay/BagWindow/Header" unique_id=130614945]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.95, 0.8, 1)
+theme_override_font_sizes/font_size = 18
+text = "装备 / 背包"
+
+[node name="CloseButton" type="Button" parent="UI/Overlay/BagWindow/Header" unique_id=2102593841]
+custom_minimum_size = Vector2(72, 0)
+layout_mode = 2
+focus_mode = 0
+text = "关闭"
+
+[node name="Tip" type="Label" parent="UI/Overlay/BagWindow" unique_id=514643127]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "背包：双击/右键使用或装备 | 装备槽：双击/右键卸下"
+horizontal_alignment = 1
+
+[node name="Body" type="HBoxContainer" parent="UI/Overlay/BagWindow" unique_id=53924992]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="EquipmentPanel" parent="UI/Overlay/BagWindow/Body" unique_id=1411173614 instance=ExtResource("8_equip")]
+layout_mode = 2
+
+[node name="InventoryPanel" parent="UI/Overlay/BagWindow/Body" unique_id=1596241790 instance=ExtResource("9_inv")]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SkillWindow" type="VBoxContainer" parent="UI/Overlay" unique_id=93554640]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -380.0
+offset_top = -300.0
+offset_right = 380.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="UI/Overlay/SkillWindow" unique_id=1616121624]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="UI/Overlay/SkillWindow/Header" unique_id=2127966377]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.95, 0.8, 1)
+theme_override_font_sizes/font_size = 18
+text = "技能栏"
+
+[node name="CloseButton" type="Button" parent="UI/Overlay/SkillWindow/Header" unique_id=1681257621]
+custom_minimum_size = Vector2(72, 0)
+layout_mode = 2
+focus_mode = 0
+text = "关闭"
+
+[node name="SkillTreePanel" parent="UI/Overlay/SkillWindow" unique_id=921094181 instance=ExtResource("10_skill")]
+layout_mode = 2
+
+[node name="HudBar" type="HBoxContainer" parent="UI" unique_id=933661094]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -72.0
+offset_right = 400.0
+offset_bottom = -16.0
+grow_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="StatsButton" type="Button" parent="UI/HudBar" unique_id=1346141774]
+custom_minimum_size = Vector2(110, 48)
+layout_mode = 2
+focus_mode = 0
+text = "角色"
+
+[node name="BagButton" type="Button" parent="UI/HudBar" unique_id=1043383216]
+custom_minimum_size = Vector2(110, 48)
+layout_mode = 2
+focus_mode = 0
+text = "背包"
+
+[node name="SkillButton" type="Button" parent="UI/HudBar" unique_id=837027681]
+custom_minimum_size = Vector2(110, 48)
+layout_mode = 2
+focus_mode = 0
+text = "技能"
+
+[node name="EncounterBattle" parent="." unique_id=624226778 instance=ExtResource("5_battle")]

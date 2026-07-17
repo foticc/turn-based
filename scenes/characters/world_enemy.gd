@@ -33,7 +33,8 @@ func _disable_visual_physics() -> void:
 
 func set_trigger_enabled(enabled: bool) -> void:
 	_can_trigger = enabled
-	monitoring = enabled
+	# body_entered 信号回调链里不能直接改 monitoring，需延迟设置。
+	set_deferred("monitoring", enabled)
 
 
 func _on_body_entered(body: Node2D) -> void:

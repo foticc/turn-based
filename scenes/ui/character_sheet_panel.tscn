@@ -29,7 +29,7 @@ horizontal_alignment = 1
 [node name="TipLabel" type="Label" parent="Margin/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-text = "单击选中 | 双击或右键「使用」| 选中装备槽后点「卸下」"
+text = "悬停查看详情 | 背包：双击/右键使用 | 装备槽：双击/右键卸下"
 horizontal_alignment = 1
 
 [node name="TopRow" type="HBoxContainer" parent="Margin/VBox"]
