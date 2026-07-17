@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cbx3hssmfikvc"]
 
 [ext_resource type="Script" uid="uid://bgrqe5niqwsfb" path="res://scenes/ui/inventory_slot_ui.gd" id="1_slot"]
+[ext_resource type="Texture2D" uid="uid://ctapor2hxiu2w" path="res://asset/demo/Inventory_Slot_1.png" id="2_bpgql"]
 
 [node name="InventorySlotUI" type="PanelContainer" unique_id=1383441532]
 custom_minimum_size = Vector2(96, 72)
@@ -15,13 +16,14 @@ theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="MarginContainer" unique_id=2006844476]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 2
+alignment = 1
 
-[node name="Icon" type="TextureRect" parent="MarginContainer/VBox"]
+[node name="Icon" type="TextureRect" parent="MarginContainer/VBox" unique_id=1604281870]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_horizontal = 4
+texture = ExtResource("2_bpgql")
 expand_mode = 1
 stretch_mode = 5
 
