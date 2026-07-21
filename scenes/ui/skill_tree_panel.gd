@@ -3,8 +3,8 @@ extends PanelContainer
 ## 技能树面板：显示节点、连线，支持点击解锁。
 
 signal node_clicked(node_id: String)
-signal unlock_succeeded(node_id: String)
-signal unlock_failed(node_id: String, reason: String)
+## 表现层只发意图，由 PlayerState / 场景协调层执行解锁。
+signal unlock_requested(node_id: String)
 
 const NODE_SIZE := Vector2(140, 64)
 
@@ -130,11 +130,7 @@ func _on_node_pressed(node_id: String) -> void:
 	if skill_tree.is_unlocked(node_id):
 		return
 
-	if skill_tree.unlock(node_id):
-		unlock_succeeded.emit(node_id)
-	else:
-		var reason := _unlock_fail_reason(node_id)
-		unlock_failed.emit(node_id, reason)
+	unlock_requested.emit(node_id)
 
 
 func _show_detail(node_id: String) -> void:

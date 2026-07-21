@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://c86e75whh2r4x"]
 
-[ext_resource type="Script" uid="uid://bx5nxya68trro" path="res://scenes/test/inventory_test.gd" id="1_test"]
-[ext_resource type="Script" uid="uid://dosy2f6fewrfm" path="res://src/inventory/inventory.gd" id="2_inventory"]
+[ext_resource type="Script" uid="uid://bx5nxya68trro" path="res://scenes/test/inventory/inventory_test.gd" id="1_test"]
 [ext_resource type="PackedScene" uid="uid://oo25b76c1rp8" path="res://scenes/ui/inventory_panel.tscn" id="3_panel"]
 
 [node name="InventoryTest" type="Control" unique_id=1169309958]
@@ -12,9 +11,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_test")
-
-[node name="Inventory" type="Node" parent="." unique_id=1734617791]
-script = ExtResource("2_inventory")
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1438382423]
 layout_mode = 1

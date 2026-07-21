@@ -1,0 +1,25 @@
+[gd_resource type="Theme" format=3 uid="uid://cx52dw6w3iiba"]
+
+[ext_resource type="Texture2D" uid="uid://ctapor2hxiu2w" path="res://asset/demo/Inventory_Slot_1.png" id="1_r1kk8"]
+[ext_resource type="Texture2D" uid="uid://dfim6npnl8ni0" path="res://asset/demo/Inventory_9Slices.png" id="2_16r2n"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_odtlb"]
+texture = ExtResource("1_r1kk8")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+region_rect = Rect2(16, 16, 64, 64)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_r1kk8"]
+texture = ExtResource("2_16r2n")
+texture_margin_left = 16.0
+texture_margin_top = 16.0
+texture_margin_right = 16.0
+texture_margin_bottom = 16.0
+
+[resource]
+ItemSlot/base_type = &"PanelContainer"
+ItemSlot/styles/panel = SubResource("StyleBoxTexture_odtlb")
+PanelBackground/base_type = &"PanelContainer"
+PanelBackground/styles/panel = SubResource("StyleBoxTexture_r1kk8")

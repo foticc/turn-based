@@ -1,0 +1,75 @@
+[gd_scene format=3 uid="uid://r18u570aircq"]
+
+[ext_resource type="Script" uid="uid://dgbt65jhx7sjw" path="res://scenes/ui/equipment_slot_ui.gd" id="1_script"]
+
+[node name="EquipmentSlotUI" type="PanelContainer" unique_id=2067552657]
+custom_minimum_size = Vector2(100, 88)
+script = ExtResource("1_script")
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=1537767370]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 4
+
+[node name="Root" type="Control" parent="Margin" unique_id=129725638]
+custom_minimum_size = Vector2(88, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Icon" type="TextureRect" parent="Margin/Root" unique_id=376670213]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -24.0
+offset_top = 2.0
+offset_right = 24.0
+offset_bottom = 42.0
+grow_horizontal = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Placeholder" type="Label" parent="Margin/Root" unique_id=22695359]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -24.0
+offset_top = 6.0
+offset_right = 24.0
+offset_bottom = 38.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 18
+text = "空"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SlotLabel" type="Label" parent="Margin/Root" unique_id=2016829126]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 44.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 11
+text = "部位"
+horizontal_alignment = 1
+
+[node name="ItemLabel" type="Label" parent="Margin/Root" unique_id=2033237676]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -18.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 11
+text = "物品"
+horizontal_alignment = 1
+text_overrun_behavior = 3

@@ -1,22 +1,9 @@
 extends Node2D
-## 大地图探索 + 遇敌战斗测试场景。
-## 左下角 HUD：角色详情 / 背包（装备+物品）/ 技能。
+## 大地图探索 + 遇敌战斗。
+## 数据层：PlayerState（ItemDatabase / Stats / Equipment / Inventory / SkillTree）
+## 表现层：HUD 面板 + EncounterBattle + BattleActor
 
-## 死区比例：角色可在镜头内自由移动，靠近边缘时相机才跟过去。
 @export_range(0.05, 0.45, 0.01) var camera_deadzone_ratio: float = 0.28
-
-const WARRIOR_PATH := "res://src/character/definitions/warrior.tres"
-const TREE_DEF_PATH := "res://src/skill_tree/trees/warrior_skill_tree.tres"
-const ITEM_PATHS := {
-	"iron_sword": "res://src/equipment/items/iron_sword.tres",
-	"bronze_crown": "res://src/equipment/items/bronze_crown.tres",
-	"leather_armor": "res://src/equipment/items/leather_armor.tres",
-	"traveler_boots": "res://src/equipment/items/traveler_boots.tres",
-	"warrior_belt": "res://src/equipment/items/warrior_belt.tres",
-	"jade_pendant": "res://src/equipment/items/jade_pendant.tres",
-	"silver_necklace": "res://src/equipment/items/silver_necklace.tres",
-	"swift_bracelet": "res://src/equipment/items/swift_bracelet.tres",
-}
 
 @onready var map_root: Node2D = $NoviceVillage
 @onready var player: CharacterBody2D = $Entities/Player
@@ -24,7 +11,6 @@ const ITEM_PATHS := {
 @onready var camera: Camera2D = $Camera2D
 @onready var encounter_battle = $EncounterBattle
 @onready var tip_label: Label = $UI/TipLabel
-@onready var inventory: Inventory = $Inventory
 
 @onready var overlay: Control = $UI/Overlay
 @onready var dimmer: ColorRect = $UI/Overlay/Dimmer
@@ -42,11 +28,8 @@ const ITEM_PATHS := {
 
 var _in_battle: bool = false
 var _current_enemy: WorldEnemy = null
-var _stats: CharacterStats
-var _equipment: Equipment
-var _skill_tree: SkillTree
+var _player_state: PlayerState
 var _open_menu: String = ""
-var _items: Dictionary = {}
 
 
 func _ready() -> void:
@@ -64,9 +47,9 @@ func _ready() -> void:
 				name_label.text = enemy.enemy_name
 
 	encounter_battle.encounter_ended.connect(_on_encounter_ended)
-	tip_label.text = "点击地面移动，碰到敌人进入战斗 | 左下角打开角色/背包/技能"
+	tip_label.text = "点击地面移动 | 左下角：角色/背包/技能（数据来自 PlayerState）"
 
-	_setup_player_data()
+	_setup_player_state()
 	_setup_menu_ui()
 
 
@@ -84,41 +67,16 @@ func _physics_process(_delta: float) -> void:
 	_update_camera_follow()
 
 
-func _setup_player_data() -> void:
-	var def := load(WARRIOR_PATH) as CharacterDefinition
-	_stats = CharacterStats.new(def, 3)
-	_equipment = Equipment.new()
-	_equipment.bind(_stats)
+func _setup_player_state() -> void:
+	_player_state = PlayerState.create_default(3, 3, 24)
+	_player_state.grant_starting_kit()
+	_player_state.action_logged.connect(_on_player_logged)
 
-	var tree_def := load(TREE_DEF_PATH) as SkillTreeDefinition
-	_skill_tree = SkillTree.new(tree_def, 3)
-
-	_items.clear()
-	for item_id in ITEM_PATHS.keys():
-		_items[item_id] = load(ITEM_PATHS[item_id]) as ItemDefinition
-	_items["health_potion"] = _create_potion()
-
-	for item_id in ITEM_PATHS.keys():
-		inventory.add_item(_items[item_id], 1)
-	inventory.add_item(_items["swift_bracelet"], 1)
-	inventory.add_item(_items["health_potion"], 3)
-
-	stats_panel.bind(_stats)
-	equipment_panel.bind(_equipment)
-	inventory_panel.bind(inventory)
+	stats_panel.bind(_player_state.stats)
+	equipment_panel.bind(_player_state.equipment)
+	inventory_panel.bind(_player_state.inventory)
 	inventory_panel.set_title("背包")
-	skill_tree_panel.bind(_skill_tree)
-
-
-func _create_potion() -> ItemDefinition:
-	var item := ItemDefinition.new()
-	item.id = "health_potion"
-	item.display_name = "生命药水"
-	item.description = "恢复 30 点生命值。"
-	item.item_type = ItemDefinition.ItemType.CONSUMABLE
-	item.max_stack = 20
-	item.heal_amount = 30
-	return item
+	skill_tree_panel.bind(_player_state.skill_tree)
 
 
 func _setup_menu_ui() -> void:
@@ -136,6 +94,7 @@ func _setup_menu_ui() -> void:
 
 	inventory_panel.use_requested.connect(_on_inventory_use_requested)
 	equipment_panel.unequip_requested.connect(_on_equipment_unequip_requested)
+	skill_tree_panel.unlock_requested.connect(_on_skill_unlock_requested)
 
 
 func _toggle_menu(menu_id: String) -> void:
@@ -192,49 +151,24 @@ func _set_world_input_enabled(enabled: bool) -> void:
 
 
 func _on_inventory_use_requested(index: int) -> void:
-	var slot_data := inventory.get_slot(index)
-	if slot_data.is_empty():
-		return
-
-	var item: ItemDefinition = slot_data.item
-	if item.is_equipment():
-		var result := _equipment.equip(item)
-		if not result.success:
-			tip_label.text = str(result.message)
-			return
-		inventory.remove_from_slot(index, 1)
-		var replaced: ItemDefinition = result.get("replaced")
-		if replaced:
-			inventory.add_item(replaced, 1)
-			tip_label.text = "装备 %s，换下 %s" % [item.display_name, replaced.display_name]
-		else:
-			tip_label.text = "装备了 %s" % item.display_name
-		return
-
-	if item.item_type == ItemDefinition.ItemType.CONSUMABLE:
-		var result := inventory.use_item_at(index)
-		if result.success:
-			var healed := 0
-			if result.heal > 0 and _stats:
-				healed = _stats.heal(result.heal)
-			tip_label.text = "%s，恢复 %d HP" % [result.message, healed]
-		else:
-			tip_label.text = str(result.message)
-		return
-
-	tip_label.text = "%s 无法使用" % item.display_name
+	_player_state.use_inventory_slot(index)
 
 
 func _on_equipment_unequip_requested(slot: ItemDefinition.EquipSlot) -> void:
-	var item := _equipment.unequip(slot)
-	if item == null:
-		return
-	var overflow := inventory.add_item(item, 1)
-	if overflow > 0:
-		_equipment.equip(item)
-		tip_label.text = "背包已满，无法卸下 %s" % item.display_name
-	else:
-		tip_label.text = "卸下了 %s" % item.display_name
+	_player_state.unequip_slot(slot)
+
+
+func _on_skill_unlock_requested(node_id: String) -> void:
+	_player_state.unlock_skill_node(node_id)
+
+
+func _on_player_logged(message: String) -> void:
+	# 去掉 bbcode 颜色标签用于顶栏短提示
+	var plain := message
+	plain = plain.replace("[color=green]", "").replace("[color=lime]", "")
+	plain = plain.replace("[color=red]", "").replace("[color=orange]", "")
+	plain = plain.replace("[color=gray]", "").replace("[/color]", "")
+	tip_label.text = plain
 
 
 func _update_camera_follow() -> void:
@@ -305,7 +239,7 @@ func _on_enemy_encounter_requested(enemy: WorldEnemy) -> void:
 		if child is WorldEnemy:
 			(child as WorldEnemy).set_trigger_enabled(false)
 
-	encounter_battle.start_encounter(enemy)
+	encounter_battle.start_encounter(enemy, _player_state)
 
 
 func _on_encounter_ended(player_won: bool) -> void:
@@ -313,14 +247,13 @@ func _on_encounter_ended(player_won: bool) -> void:
 	_current_enemy = null
 
 	if player_won and is_instance_valid(fought):
-		tip_label.text = "击败了 %s！" % fought.enemy_name
+		tip_label.text = "击败了 %s！（战斗结果已写回 PlayerState）" % fought.enemy_name
 		fought.queue_free()
 	elif not player_won:
-		tip_label.text = "战败了…敌人仍在，稍后再试"
+		tip_label.text = "战败了…敌人仍在（HP 已写回，保底 1）"
 	else:
-		tip_label.text = "点击地面移动，碰到敌人进入战斗"
+		tip_label.text = "点击地面移动 | 左下角：角色/背包/技能"
 
-	# 短暂无敌，避免战败后立刻再次触发
 	await get_tree().create_timer(0.8).timeout
 
 	_in_battle = false

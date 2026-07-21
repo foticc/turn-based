@@ -1,30 +1,85 @@
-[gd_scene load_steps=2 format=3 uid="uid://equipment_panel"]
+[gd_scene format=3 uid="uid://dwr0nl2tulwr4"]
 
-[ext_resource type="Script" path="res://scenes/ui/equipment_panel.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://braw3yh481nxb" path="res://scenes/ui/equipment_panel.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/equipment_slot_ui.tscn" id="2_slot"]
+[ext_resource type="Texture2D" uid="uid://ctapor2hxiu2w" path="res://asset/demo/Inventory_Slot_1.png" id="3_bg1"]
+[ext_resource type="Texture2D" uid="uid://tp2hkef6egu5" path="res://asset/demo/Inventory_Slot_2.png" id="4_bg2"]
+[ext_resource type="Texture2D" uid="uid://2u7jyrkx8uta" path="res://asset/demo/Inventory_Slot_3.png" id="5_bg3"]
+[ext_resource type="Texture2D" uid="uid://ckfsg3s5m38j4" path="res://asset/demo/Inventory_Slot_4.png" id="6_bg4"]
+[ext_resource type="Texture2D" uid="uid://b6hm2twaw25es" path="res://asset/demo/Inventory_Slot_5.png" id="7_bg5"]
+[ext_resource type="Texture2D" uid="uid://cpy2pmctxbcht" path="res://asset/demo/Inventory_Slot_6.png" id="8_bg6"]
+[ext_resource type="Texture2D" uid="uid://doum2qo31k2c4" path="res://asset/demo/Inventory_Slot_7.png" id="9_bg7"]
+[ext_resource type="Texture2D" uid="uid://bps40yus6y8b" path="res://asset/demo/Inventory_Slot_8.png" id="10_bg8"]
+[ext_resource type="Texture2D" uid="uid://b75h7j82d0nsp" path="res://asset/demo/Inventory_Slot_9.png" id="11_bg9"]
 
-[node name="EquipmentPanel" type="PanelContainer"]
-custom_minimum_size = Vector2(340, 320)
+[node name="EquipmentPanel" type="PanelContainer" unique_id=1448122992]
+custom_minimum_size = Vector2(340, 360)
 script = ExtResource("1_script")
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="Margin" type="MarginContainer" parent="." unique_id=101705212]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 12
 
-[node name="VBox" type="VBoxContainer" parent="Margin"]
+[node name="VBox" type="VBoxContainer" parent="Margin" unique_id=117744862]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TitleLabel" type="Label" parent="Margin/VBox"]
+[node name="TitleLabel" type="Label" parent="Margin/VBox" unique_id=964966272]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "装备栏"
 horizontal_alignment = 1
 
-[node name="SlotsGrid" type="GridContainer" parent="Margin/VBox"]
+[node name="SlotsGrid" type="GridContainer" parent="Margin/VBox" unique_id=1678259295]
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
 columns = 3
+
+[node name="WeaponSlot" parent="Margin/VBox/SlotsGrid" unique_id=1906424007 instance=ExtResource("2_slot")]
+layout_mode = 2
+equip_slot = 1
+background = ExtResource("3_bg1")
+
+[node name="HelmetSlot" parent="Margin/VBox/SlotsGrid" unique_id=1536193984 instance=ExtResource("2_slot")]
+layout_mode = 2
+equip_slot = 2
+background = ExtResource("4_bg2")
+
+[node name="ClothesSlot" parent="Margin/VBox/SlotsGrid" unique_id=1886851764 instance=ExtResource("2_slot")]
+layout_mode = 2
+equip_slot = 3
+background = ExtResource("5_bg3")
+
+[node name="ShoesSlot" parent="Margin/VBox/SlotsGrid" unique_id=1652193187 instance=ExtResource("2_slot")]
+layout_mode = 2
+equip_slot = 4
+background = ExtResource("6_bg4")
+
+[node name="BeltSlot" parent="Margin/VBox/SlotsGrid" unique_id=561873395 instance=ExtResource("2_slot")]
+layout_mode = 2
+equip_slot = 5
+background = ExtResource("7_bg5")
+
+[node name="JadeSlot" parent="Margin/VBox/SlotsGrid" unique_id=144567766 instance=ExtResource("2_slot")]
+layout_mode = 2
+equip_slot = 6
+background = ExtResource("8_bg6")
+
+[node name="NecklaceSlot" parent="Margin/VBox/SlotsGrid" unique_id=722146987 instance=ExtResource("2_slot")]
+layout_mode = 2
+equip_slot = 7
+background = ExtResource("9_bg7")
+
+[node name="BraceletLeftSlot" parent="Margin/VBox/SlotsGrid" unique_id=1665106954 instance=ExtResource("2_slot")]
+layout_mode = 2
+equip_slot = 8
+background = ExtResource("10_bg8")
+
+[node name="BraceletRightSlot" parent="Margin/VBox/SlotsGrid" unique_id=766809274 instance=ExtResource("2_slot")]
+layout_mode = 2
+equip_slot = 9
+background = ExtResource("11_bg9")

@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://equipment_test"]
+[gd_scene load_steps=3 format=3 uid="uid://equipment_test"]
 
-[ext_resource type="Script" path="res://scenes/test/equipment_test.gd" id="1_script"]
-[ext_resource type="Script" path="res://src/inventory/inventory.gd" id="2_inventory"]
+[ext_resource type="Script" path="res://scenes/test/equipment/equipment_test.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/ui/character_sheet_panel.tscn" id="3_sheet"]
 
 [node name="EquipmentTest" type="Control"]
@@ -12,10 +11,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
-
-[node name="Inventory" type="Node" parent="."]
-script = ExtResource("2_inventory")
-capacity = 24
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1

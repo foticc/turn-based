@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemDatabase" load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://src/inventory/item_database.gd" id="1_db"]
+[ext_resource type="Resource" path="res://src/equipment/items/iron_sword.tres" id="2_sword"]
+[ext_resource type="Resource" path="res://src/equipment/items/bronze_crown.tres" id="3_crown"]
+[ext_resource type="Resource" path="res://src/equipment/items/leather_armor.tres" id="4_armor"]
+[ext_resource type="Resource" path="res://src/equipment/items/traveler_boots.tres" id="5_boots"]
+[ext_resource type="Resource" path="res://src/equipment/items/warrior_belt.tres" id="6_belt"]
+[ext_resource type="Resource" path="res://src/equipment/items/jade_pendant.tres" id="7_jade"]
+[ext_resource type="Resource" path="res://src/equipment/items/silver_necklace.tres" id="8_neck"]
+[ext_resource type="Resource" path="res://src/equipment/items/swift_bracelet.tres" id="9_bracelet"]
+[ext_resource type="Resource" path="res://src/inventory/items/health_potion.tres" id="10_potion"]
+[ext_resource type="Resource" path="res://src/inventory/items/greater_health_potion.tres" id="11_gpotion"]
+[ext_resource type="Resource" path="res://src/inventory/items/herb.tres" id="12_herb"]
+
+[resource]
+script = ExtResource("1_db")
+items = [ExtResource("2_sword"), ExtResource("3_crown"), ExtResource("4_armor"), ExtResource("5_boots"), ExtResource("6_belt"), ExtResource("7_jade"), ExtResource("8_neck"), ExtResource("9_bracelet"), ExtResource("10_potion"), ExtResource("11_gpotion"), ExtResource("12_herb")]

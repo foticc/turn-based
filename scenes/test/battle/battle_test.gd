@@ -1,9 +1,10 @@
 extends Node2D
-## 可视化回合制战斗测试。
+## 纯战斗测试：2 名玩家控制单位 vs 多名敌人（含多目标技能）。
 
 @onready var turn_manager: TurnManager = $TurnManager
 @onready var player_team: Node2D = $BattleField/Players
 @onready var enemy_team: Node2D = $BattleField/Enemies
+@onready var vfx_player: BattleVfxPlayer = $BattleField/VfxPlayer
 @onready var status_label: Label = $UI/MarginContainer/VBox/StatusLabel
 @onready var action_panel: HBoxContainer = $UI/MarginContainer/VBox/ActionPanel
 @onready var target_panel: HBoxContainer = $UI/MarginContainer/VBox/TargetPanel
@@ -28,6 +29,7 @@ func _connect_signals() -> void:
 	turn_manager.phase_changed.connect(_on_phase_changed)
 	turn_manager.round_started.connect(_on_round_started)
 	turn_manager.turn_started.connect(_on_turn_started)
+	turn_manager.round_ended.connect(_on_round_ended)
 	turn_manager.action_requested.connect(_on_action_requested)
 	turn_manager.action_executing.connect(_on_action_executing)
 	turn_manager.action_completed.connect(_on_action_completed)
@@ -62,7 +64,7 @@ func _start_battle() -> void:
 
 	restart_button.disabled = true
 	log_label.clear()
-	_append_log("[color=yellow]战斗开始！[/color]")
+	_append_log("[color=yellow]战斗开始！先为我方全员选择指令，再统一结算。[/color]")
 	turn_manager.start_battle(units)
 
 
@@ -71,17 +73,30 @@ func _on_phase_changed(phase: TurnManager.Phase) -> void:
 
 
 func _on_round_started(round_number: int) -> void:
-	status_label.text = "第 %d 回合" % round_number
+	status_label.text = "第 %d 回合 · 选择指令" % round_number
 
 
 func _on_turn_started(participant: TurnParticipant) -> void:
-	status_label.text = "当前行动: %s" % participant.display_name
+	if turn_manager.current_phase == TurnManager.Phase.RESOLVE \
+			or turn_manager.current_phase == TurnManager.Phase.EXECUTING_ACTION:
+		status_label.text = "行动中: %s" % participant.display_name
+	else:
+		status_label.text = "选择指令: %s" % participant.display_name
 	for actor in _actors_by_unit.values():
 		actor.set_turn_active(actor.battle_unit == participant)
 
 
 func _on_action_requested(participant: TurnParticipant, _actions: Array) -> void:
+	status_label.text = "选择指令: %s" % participant.display_name
+	for actor in _actors_by_unit.values():
+		actor.set_turn_active(actor.battle_unit == participant)
 	_command_menu.show_for(participant, turn_manager.participants)
+
+
+func _on_round_ended(_round_number: int) -> void:
+	for actor_node in _actors_by_unit.values():
+		actor_node.sync_from_unit()
+		actor_node.set_turn_active(false)
 
 
 func _on_command_action_chosen(action: TurnAction, target: TurnParticipant) -> void:
@@ -95,12 +110,29 @@ func _on_no_targets() -> void:
 func _on_action_executing(action: TurnAction, actor: TurnParticipant, target: TurnParticipant) -> void:
 	_last_target_id = target.id if target else ""
 	var actor_node: BattleActor = _actors_by_unit.get(actor.id)
+	var target_node: BattleActor = _actors_by_unit.get(target.id) if target else null
 	if actor_node == null:
 		return
 	if action is SkillAction:
-		actor_node.play_skill(action as SkillAction)
+		var skill := action as SkillAction
+		actor_node.play_skill(skill)
+		if vfx_player:
+			vfx_player.play_for_skill(skill, actor_node, _actor_nodes_for_skill(skill, target_node))
 	elif action.id == "attack":
 		actor_node.play_attack()
+
+
+func _actor_nodes_for_skill(skill: SkillAction, fallback: BattleActor) -> Array:
+	var nodes: Array = []
+	for receiver in skill.get_resolved_targets():
+		if receiver == null:
+			continue
+		var node: BattleActor = _actors_by_unit.get(receiver.id)
+		if node:
+			nodes.append(node)
+	if nodes.is_empty() and fallback:
+		nodes.append(fallback)
+	return nodes
 
 
 func _on_action_completed(action: TurnAction, _actor: TurnParticipant, result: Dictionary) -> void:
@@ -108,18 +140,25 @@ func _on_action_completed(action: TurnAction, _actor: TurnParticipant, result: D
 		actor_node.sync_from_unit()
 
 	var dealt_damage: bool = result.get("damage", 0) > 0
-	var is_offensive := action.id == "attack" or action is SkillAction
-	if not is_offensive or _last_target_id == "" or not dealt_damage:
+	var is_damage_skill := action is SkillAction and (
+		(action as SkillAction).skill_kind == SkillDefinition.SkillKind.DAMAGE
+	)
+	var is_offensive := action.id == "attack" or is_damage_skill
+	if not is_offensive or not dealt_damage:
 		return
 
-	var target_node: BattleActor = _actors_by_unit.get(_last_target_id)
-	if target_node == null:
-		return
+	var hit_ids: PackedStringArray = result.get("damaged_ids", PackedStringArray())
+	if hit_ids.is_empty() and _last_target_id != "":
+		hit_ids = PackedStringArray([_last_target_id])
 
-	if result.get("defended", false):
-		target_node.play_defend_on_hit()
-	else:
-		target_node.play_hurt()
+	for target_id in hit_ids:
+		var target_node: BattleActor = _actors_by_unit.get(target_id)
+		if target_node == null:
+			continue
+		if result.get("defended", false):
+			target_node.play_defend_on_hit()
+		else:
+			target_node.play_hurt()
 
 
 func _on_battle_finished(_winning_team: int) -> void:

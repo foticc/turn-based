@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b3bjxeep86qfy"]
 
-[ext_resource type="Script" uid="uid://8loqycpbe6so" path="res://scenes/test/skill_tree_test.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://8loqycpbe6so" path="res://scenes/test/skill_tree/skill_tree_test.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/ui/skill_tree_panel.tscn" id="2_panel"]
 
 [node name="SkillTreeTest" type="Control" unique_id=396343322]

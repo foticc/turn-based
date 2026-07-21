@@ -1,19 +1,18 @@
 class_name Equipment
 extends RefCounted
-## 角色装备管理：穿戴、卸下，并把属性加成应用到 CharacterStats。
+## 装备槽数据：只管理穿戴状态与加成汇总，不持有 CharacterStats。
+## 属性同步由 PlayerState（或其它协调层）在 equip/unequip 后调用 apply。
 
 signal changed
 signal equipped(slot: ItemDefinition.EquipSlot, item: ItemDefinition)
 signal unequipped(slot: ItemDefinition.EquipSlot, item: ItemDefinition)
 
-var stats: CharacterStats
 var _slots: Dictionary = {} # EquipSlot -> ItemDefinition
 
 
-func bind(target_stats: CharacterStats) -> void:
-	stats = target_stats
+func clear() -> void:
 	_slots.clear()
-	_recalc_bonuses()
+	changed.emit()
 
 
 func get_equipped(slot: ItemDefinition.EquipSlot) -> ItemDefinition:
@@ -37,8 +36,6 @@ func get_all_slots() -> Array:
 func equip(item: ItemDefinition) -> Dictionary:
 	if item == null or not item.is_equipment():
 		return {"success": false, "message": "该物品无法装备。"}
-	if stats == null:
-		return {"success": false, "message": "未绑定角色。"}
 
 	var slot := _resolve_equip_slot(item)
 	if slot == ItemDefinition.EquipSlot.NONE:
@@ -46,7 +43,6 @@ func equip(item: ItemDefinition) -> Dictionary:
 
 	var old_item: ItemDefinition = _slots.get(slot)
 	_slots[slot] = item
-	_recalc_bonuses()
 	equipped.emit(slot, item)
 	changed.emit()
 	return {
@@ -62,7 +58,6 @@ func unequip(slot: ItemDefinition.EquipSlot) -> ItemDefinition:
 		return null
 	var item: ItemDefinition = _slots[slot]
 	_slots.erase(slot)
-	_recalc_bonuses()
 	unequipped.emit(slot, item)
 	changed.emit()
 	return item
@@ -97,16 +92,3 @@ func _resolve_equip_slot(item: ItemDefinition) -> ItemDefinition.EquipSlot:
 	if not _slots.has(ItemDefinition.EquipSlot.BRACELET_RIGHT):
 		return ItemDefinition.EquipSlot.BRACELET_RIGHT
 	return ItemDefinition.EquipSlot.BRACELET_LEFT
-
-
-func _recalc_bonuses() -> void:
-	if stats == null:
-		return
-	var bonus := get_bonus_summary()
-	stats.apply_equipment_bonuses(
-		bonus.attack,
-		bonus.defense,
-		bonus.speed,
-		bonus.max_hp,
-		bonus.max_mp
-	)

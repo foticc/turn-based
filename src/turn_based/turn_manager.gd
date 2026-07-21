@@ -1,14 +1,14 @@
 class_name TurnManager
 extends Node
-## 回合制战斗管理器，负责回合循环、行动调度与胜负判定。
+## 回合制战斗：每回合先收集我方全部指令，再与敌方一齐按速度结算。
 
 enum Phase {
 	IDLE,
 	ROUND_START,
-	TURN_START,
+	COMMAND, ## 收集我方指令
 	WAITING_FOR_ACTION,
+	RESOLVE, ## 按速度依次结算本回合行动
 	EXECUTING_ACTION,
-	TURN_END,
 	ROUND_END,
 	FINISHED,
 }
@@ -32,6 +32,8 @@ var current_phase: Phase = Phase.IDLE
 
 var _battle_running: bool = false
 var _waiting_for_action: bool = false
+## { "actor": TurnParticipant, "action": TurnAction, "target": TurnParticipant }
+var _planned_actions: Array[Dictionary] = []
 
 
 func start_battle(battle_participants: Array) -> void:
@@ -43,6 +45,7 @@ func start_battle(battle_participants: Array) -> void:
 		participants.append(participant as TurnParticipant)
 	current_round = 0
 	current_participant = null
+	_planned_actions.clear()
 	_battle_running = true
 	_set_phase(Phase.IDLE)
 	_log("战斗开始！")
@@ -56,10 +59,16 @@ func submit_action(action: TurnAction, target: TurnParticipant = null) -> void:
 		return
 	if not action.can_execute(current_participant, target):
 		_log("无法执行该行动。")
+		action_requested.emit(current_participant, _get_actions_for(current_participant))
 		return
 
+	_planned_actions.append({
+		"actor": current_participant,
+		"action": action,
+		"target": target,
+	})
+	_log("%s 已选择【%s】" % [current_participant.display_name, action.display_name])
 	_waiting_for_action = false
-	_execute_action(action, target)
 
 
 func get_living_participants() -> Array[TurnParticipant]:
@@ -84,80 +93,167 @@ func _run_battle_loop() -> void:
 		_set_phase(Phase.ROUND_START)
 		round_started.emit(current_round)
 		_log("—— 第 %d 回合 ——" % current_round)
-		_build_turn_order()
+		_begin_round()
 
-		for participant in turn_order:
+		_planned_actions.clear()
+		_set_phase(Phase.COMMAND)
+
+		# 1) 我方所有可行动单位依次选指令（先不结算）
+		var player_units := _get_living_player_units()
+		_sort_by_speed(player_units)
+		for participant in player_units:
 			if not _battle_running or _is_battle_over():
 				break
 			if not participant.can_act():
 				continue
 
 			current_participant = participant
-			_set_phase(Phase.TURN_START)
-			participant.on_turn_start()
 			turn_started.emit(participant)
-			_log("%s 的回合" % participant.display_name)
+			_log("请为 %s 选择指令" % participant.display_name)
 
 			var actions := _get_actions_for(participant)
 			if actions.is_empty():
-				_end_current_turn()
+				turn_ended.emit(participant)
+				current_participant = null
 				continue
 
 			_set_phase(Phase.WAITING_FOR_ACTION)
-			if participant.is_player_controlled():
-				_waiting_for_action = true
-				action_requested.emit(participant, actions)
-				while _waiting_for_action and _battle_running:
-					await get_tree().process_frame
-			else:
-				await get_tree().create_timer(0.6).timeout
-				var choice := _choose_ai_action(participant, actions)
-				_execute_action(choice.action, choice.target)
+			_waiting_for_action = true
+			action_requested.emit(participant, actions)
+			while _waiting_for_action and _battle_running:
+				await get_tree().process_frame
+
+			turn_ended.emit(participant)
+			current_participant = null
+
+		if not _battle_running or _is_battle_over():
+			break
+
+		# 2) 敌方（及非玩家控制单位）决定行动
+		for participant in get_living_participants():
+			if participant.is_player_controlled() or not participant.can_act():
+				continue
+			var actions := _get_actions_for(participant)
+			if actions.is_empty():
+				continue
+			var choice := _choose_ai_action(participant, actions)
+			if choice.action == null:
+				continue
+			_planned_actions.append({
+				"actor": participant,
+				"action": choice.action,
+				"target": choice.target,
+			})
+
+		# 3) 按速度统一结算
+		_set_phase(Phase.RESOLVE)
+		_log("—— 行动开始 ——")
+		_sort_planned_by_speed()
+		for plan in _planned_actions:
+			if not _battle_running or _is_battle_over():
+				break
+			_resolve_planned(plan)
+			if _battle_running and not _is_battle_over():
+				await get_tree().create_timer(0.35).timeout
 
 		_set_phase(Phase.ROUND_END)
+		_end_round()
 		round_ended.emit(current_round)
 
 	_finish_battle()
 
 
-func _execute_action(action: TurnAction, target: TurnParticipant) -> void:
-	if current_participant == null or action == null:
+func _begin_round() -> void:
+	for p in participants:
+		if p is BattleUnit:
+			(p as BattleUnit).on_round_start()
+
+
+func _end_round() -> void:
+	for p in participants:
+		if p is BattleUnit:
+			(p as BattleUnit).on_round_end()
+
+
+func _resolve_planned(plan: Dictionary) -> void:
+	var actor: TurnParticipant = plan.get("actor")
+	var action: TurnAction = plan.get("action")
+	var target: TurnParticipant = plan.get("target")
+	if actor == null or action == null or not actor.can_act():
+		return
+
+	if action.target_type == TurnAction.TargetType.SELF or action.target_type == TurnAction.TargetType.NONE:
+		target = actor
+	elif target == null or not target.is_alive:
+		var alts: Array = actor.get_valid_targets(action, participants)
+		if alts.is_empty():
+			_log("%s 的【%s】取消（没有目标）" % [actor.display_name, action.display_name])
+			return
+		target = alts.pick_random()
+
+	current_participant = actor
+	turn_started.emit(actor)
+
+	if action is SkillAction:
+		var skill := action as SkillAction
+		skill.clear_resolved_targets()
+		skill.prepare_targets(actor, target, participants)
+
+	if not action.can_execute(actor, target):
+		_log("%s 无法执行【%s】" % [actor.display_name, action.display_name])
+		if action is SkillAction:
+			(action as SkillAction).clear_resolved_targets()
+		turn_ended.emit(actor)
+		current_participant = null
 		return
 
 	_set_phase(Phase.EXECUTING_ACTION)
-	action_executing.emit(action, current_participant, target)
-	var result := action.execute(current_participant, target)
-	action_completed.emit(action, current_participant, result)
+	action_executing.emit(action, actor, target)
+	var result := action.execute(actor, target)
+	action_completed.emit(action, actor, result)
 
 	if result.get("message", "") != "":
 		_log(str(result.message))
 
-	_end_current_turn()
-
-
-func _end_current_turn() -> void:
-	if current_participant == null:
-		return
-
-	_set_phase(Phase.TURN_END)
-	current_participant.on_turn_end()
-	turn_ended.emit(current_participant)
+	turn_ended.emit(actor)
 	current_participant = null
 
 
-func _build_turn_order() -> void:
-	var living := get_living_participants()
-	living.sort_custom(func(a: TurnParticipant, b: TurnParticipant) -> bool:
-		if a.speed != b.speed:
-			return a.speed > b.speed
-		return a.display_name < b.display_name
+func _get_living_player_units() -> Array[TurnParticipant]:
+	var result: Array[TurnParticipant] = []
+	for p in participants:
+		if p.is_alive and p.is_player_controlled():
+			result.append(p)
+	return result
+
+
+func _sort_by_speed(units: Array[TurnParticipant]) -> void:
+	units.sort_custom(func(a: TurnParticipant, b: TurnParticipant) -> bool:
+		return _effective_speed(a) > _effective_speed(b)
 	)
-	turn_order = living
+
+
+func _sort_planned_by_speed() -> void:
+	_planned_actions.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return _effective_speed(a.get("actor")) > _effective_speed(b.get("actor"))
+	)
+	turn_order.clear()
+	for plan in _planned_actions:
+		var actor: TurnParticipant = plan.get("actor")
+		if actor:
+			turn_order.append(actor)
+
+
+func _effective_speed(participant: TurnParticipant) -> int:
+	if participant == null:
+		return 0
+	if participant is BattleUnit:
+		return (participant as BattleUnit).get_effective_speed()
+	return participant.speed
 
 
 func _get_actions_for(participant: TurnParticipant) -> Array:
 	if participant is BattleUnit:
-		# 玩家看到全部行动（含冷却/MP 不足的技能，由 UI 禁用）
 		if participant.is_player_controlled():
 			return participant.get_actions()
 		return (participant as BattleUnit).get_usable_actions()
@@ -182,7 +278,6 @@ func _choose_ai_action(actor: TurnParticipant, actions: Array) -> Dictionary:
 		if defend_action and unit.hp <= unit.max_hp * 0.3:
 			return {"action": defend_action, "target": actor}
 
-	# 有可用技能时约 50% 概率放技能
 	if not skill_actions.is_empty() and randf() < 0.5:
 		var skill: SkillAction = skill_actions.pick_random()
 		if skill.is_ready(actor):
@@ -199,6 +294,8 @@ func _choose_ai_action(actor: TurnParticipant, actions: Array) -> Dictionary:
 		if action.target_type == TurnAction.TargetType.NONE or action.target_type == TurnAction.TargetType.SELF:
 			return {"action": action, "target": actor}
 
+	if actions.is_empty():
+		return {"action": null, "target": null}
 	return {"action": actions[0], "target": null}
 
 
@@ -213,6 +310,7 @@ func _is_battle_over() -> bool:
 func _finish_battle() -> void:
 	_battle_running = false
 	_waiting_for_action = false
+	_planned_actions.clear()
 	_set_phase(Phase.FINISHED)
 
 	var winning_team := -1

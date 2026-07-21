@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="SkillDefinition" format=3 uid="uid://unkw8g5kn4q0"]
+
+[ext_resource type="Script" uid="uid://cjd71oafpk4of" path="res://src/turn_based/skills/skill_definition.gd" id="1_def"]
+[ext_resource type="Script" uid="uid://yo5jff7k5g8a" path="res://src/turn_based/skills/skill_effect.gd" id="2_fx"]
+[ext_resource type="Resource" path="res://src/turn_based/buffs/war_cry_buff.tres" id="3_buff"]
+
+[sub_resource type="Resource" id="Effect_buff"]
+script = ExtResource("2_fx")
+effect_type = 1
+buff = ExtResource("3_buff")
+
+[resource]
+script = ExtResource("1_def")
+id = "war_cry"
+display_name = "战吼"
+description = "激励自身，提升攻击与速度，持续 3 回合。"
+skill_kind = 1
+target_type = 1
+mp_cost = 6
+cooldown_turns = 2
+effects = Array[ExtResource("2_fx")]([SubResource("Effect_buff")])
+animation_duration = 0.45
+vfx_anchor = 0
+vfx_color = Color(1, 0.7, 0.25, 0.9)
+vfx_duration = 0.5
+vfx_radius = 56.0

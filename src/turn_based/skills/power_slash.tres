@@ -1,6 +1,11 @@
-[gd_resource type="Resource" script_class="SkillDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="SkillDefinition" format=3 uid="uid://cb6tu3cw8ibuu"]
 
-[ext_resource type="Script" path="res://src/turn_based/skills/skill_definition.gd" id="1_def"]
+[ext_resource type="Script" uid="uid://cjd71oafpk4of" path="res://src/turn_based/skills/skill_definition.gd" id="1_def"]
+[ext_resource type="Script" uid="uid://yo5jff7k5g8a" path="res://src/turn_based/skills/skill_effect.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="Effect_dmg"]
+script = ExtResource("2_fx")
+power_multiplier = 1.8
 
 [resource]
 script = ExtResource("1_def")
@@ -8,7 +13,8 @@ id = "power_slash"
 display_name = "强力斩"
 description = "蓄力挥砍，对单体敌人造成较高物理伤害。"
 mp_cost = 8
-power_multiplier = 1.8
 cooldown_turns = 1
-animation_name = &"attack2"
-animation_duration = 0.5
+effects = Array[ExtResource("2_fx")]([SubResource("Effect_dmg")])
+vfx_color = Color(1, 0.45, 0.2, 0.9)
+vfx_duration = 0.4
+vfx_radius = 42.0

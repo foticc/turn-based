@@ -1,16 +1,16 @@
 class_name Inventory
-extends Node
-## 物品栏，管理固定数量的格子与堆叠逻辑。
+extends RefCounted
+## 物品栏数据：固定格子与堆叠逻辑（纯数据，不依赖场景树）。
 
 signal changed
 signal item_used(slot_index: int, item: ItemDefinition, result: Dictionary)
 
-@export var capacity: int = 16
-
+var capacity: int = 16
 var _slots: Array = []
 
 
-func _ready() -> void:
+func _init(p_capacity: int = 16) -> void:
+	capacity = maxi(p_capacity, 1)
 	_reset_slots()
 
 

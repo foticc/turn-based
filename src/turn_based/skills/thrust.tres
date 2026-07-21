@@ -1,14 +1,20 @@
-[gd_resource type="Resource" script_class="SkillDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="SkillDefinition" format=3 uid="uid://b4433b8yeijsn"]
 
-[ext_resource type="Script" path="res://src/turn_based/skills/skill_definition.gd" id="1_def"]
+[ext_resource type="Script" uid="uid://cjd71oafpk4of" path="res://src/turn_based/skills/skill_definition.gd" id="1_def"]
+[ext_resource type="Script" uid="uid://yo5jff7k5g8a" path="res://src/turn_based/skills/skill_effect.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="Effect_dmg"]
+script = ExtResource("2_fx")
+power_multiplier = 1.4
 
 [resource]
 script = ExtResource("1_def")
 id = "thrust"
 display_name = "突刺"
-description = "迅捷突进刺击，耗蓝少且无冷却，适合频繁使用。"
+description = "快速突刺，无冷却。"
 mp_cost = 5
-power_multiplier = 1.5
-cooldown_turns = 0
-animation_name = &"attack2"
+effects = Array[ExtResource("2_fx")]([SubResource("Effect_dmg")])
 animation_duration = 0.45
+vfx_color = Color(0.7, 0.85, 1, 0.9)
+vfx_duration = 0.35
+vfx_radius = 36.0

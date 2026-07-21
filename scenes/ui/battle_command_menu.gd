@@ -31,11 +31,27 @@ func hide_all() -> void:
 		_target_panel.visible = false
 
 
+func _actor_title() -> String:
+	if _participant == null:
+		return "选择指令"
+	return "▶ %s 的指令" % _participant.display_name
+
+
+func _add_actor_header(container: HBoxContainer) -> void:
+	var label := Label.new()
+	label.text = _actor_title()
+	label.add_theme_color_override("font_color", Color(1.0, 0.92, 0.45))
+	label.add_theme_font_size_override("font_size", 18)
+	container.add_child(label)
+
+
 func _show_main_commands() -> void:
 	_clear(_action_panel)
 	_clear(_target_panel)
 	_action_panel.visible = true
 	_target_panel.visible = false
+
+	_add_actor_header(_action_panel)
 
 	var unit := _participant as BattleUnit
 	var basics: Array[TurnAction] = []
@@ -58,16 +74,25 @@ func _show_main_commands() -> void:
 			others.append(action)
 
 	if attack:
-		_add_button(_action_panel, attack.get_button_text(), _on_action_picked.bind(attack))
+		_add_button(_action_panel, attack.get_button_text(), _request_action.bind(attack))
 
 	if unit and unit.has_skills():
-		_add_button(_action_panel, "技能", _show_skill_list)
+		_add_button(_action_panel, "技能", _request_skill_list)
 
 	if defend:
-		_add_button(_action_panel, defend.get_button_text(), _on_action_picked.bind(defend))
+		_add_button(_action_panel, defend.get_button_text(), _request_action.bind(defend))
 
 	for action in others:
-		_add_button(_action_panel, action.get_button_text(), _on_action_picked.bind(action))
+		_add_button(_action_panel, action.get_button_text(), _request_action.bind(action))
+
+
+func _request_skill_list() -> void:
+	# 必须在 pressed 回调结束后再清按钮，否则可能打断后续 UI 重建
+	_show_skill_list.call_deferred()
+
+
+func _request_action(action: TurnAction) -> void:
+	_on_action_picked.call_deferred(action)
 
 
 func _show_skill_list() -> void:
@@ -75,6 +100,8 @@ func _show_skill_list() -> void:
 	_clear(_target_panel)
 	_action_panel.visible = true
 	_target_panel.visible = false
+
+	_add_actor_header(_action_panel)
 
 	var unit := _participant as BattleUnit
 	if unit == null:
@@ -88,16 +115,20 @@ func _show_skill_list() -> void:
 		var ready := skill.is_ready(_participant)
 		# 不用 disabled，否则 tip 不显示；未就绪时点击无效
 		btn.modulate = Color.WHITE if ready else Color(0.65, 0.65, 0.7)
-		btn.pressed.connect(_on_skill_button_pressed.bind(skill, ready))
+		btn.pressed.connect(_request_skill.bind(skill))
 		_action_panel.add_child(btn)
 
-	_add_button(_action_panel, "返回", _show_main_commands)
+	_add_button(_action_panel, "返回", _request_main_commands)
 
 
-func _on_skill_button_pressed(skill: SkillAction, ready: bool) -> void:
-	if not ready:
+func _request_main_commands() -> void:
+	_show_main_commands.call_deferred()
+
+
+func _request_skill(skill: SkillAction) -> void:
+	if not skill.is_ready(_participant):
 		return
-	_on_action_picked(skill)
+	_on_action_picked.call_deferred(skill)
 
 
 func _on_action_picked(action: TurnAction) -> void:
@@ -119,16 +150,26 @@ func _on_action_picked(action: TurnAction) -> void:
 	_action_panel.visible = false
 	_target_panel.visible = true
 
+	_add_actor_header(_target_panel)
+
+	var multi := action is SkillAction and (action as SkillAction).max_targets > 1
 	for target in targets:
-		_add_button(_target_panel, target.display_name, _on_target_picked.bind(action, target))
+		var label: String = str(target.display_name)
+		if multi:
+			label = "%s（主目标）" % str(target.display_name)
+		_add_button(_target_panel, label, _request_target.bind(action, target))
 
 	if action is SkillAction:
-		_add_button(_target_panel, "返回", _show_skill_list)
+		_add_button(_target_panel, "返回", _request_skill_list)
 	else:
-		_add_button(_target_panel, "返回", _show_main_commands)
+		_add_button(_target_panel, "返回", _request_main_commands)
 
 
-func _on_target_picked(action: TurnAction, target: TurnParticipant) -> void:
+func _request_target(action: TurnAction, target: TurnParticipant) -> void:
+	_confirm_target.call_deferred(action, target)
+
+
+func _confirm_target(action: TurnAction, target: TurnParticipant) -> void:
 	hide_all()
 	action_chosen.emit(action, target)
 
@@ -143,5 +184,8 @@ func _add_button(container: HBoxContainer, text: String, callable: Callable) -> 
 func _clear(container: HBoxContainer) -> void:
 	if container == null:
 		return
-	for child in container.get_children():
+	# 先移出再释放，避免同一帧内 HBox 里残留待删除子节点干扰布局
+	while container.get_child_count() > 0:
+		var child := container.get_child(0)
+		container.remove_child(child)
 		child.queue_free()

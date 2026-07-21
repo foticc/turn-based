@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="BuffDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/turn_based/buffs/buff_definition.gd" id="1_buff"]
+
+[resource]
+script = ExtResource("1_buff")
+id = "war_cry_buff"
+display_name = "战吼"
+description = "士气高涨，攻击提升。持续 3 个战斗回合。"
+duration_turns = 3
+max_stacks = 1
+bonus_attack = 6
+bonus_defense = 0
+bonus_speed = 1
+tint_color = Color(1, 0.55, 0.2, 1)

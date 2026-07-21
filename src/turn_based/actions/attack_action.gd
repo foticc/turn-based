@@ -20,7 +20,7 @@ func execute(actor: TurnParticipant, target: TurnParticipant) -> Dictionary:
 		var attacker := actor as BattleUnit
 		var defender := target as BattleUnit
 		var defended := defender.is_defending
-		var damage := defender.take_damage(attacker.attack_power)
+		var damage := defender.take_damage(attacker.get_effective_attack())
 		var msg := "%s 攻击 %s，造成 %d 点伤害" % [attacker.display_name, defender.display_name, damage]
 		if defended:
 			msg += "（被防御）"

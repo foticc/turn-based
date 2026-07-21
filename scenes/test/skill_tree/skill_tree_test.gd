@@ -1,5 +1,5 @@
 extends Control
-## 技能树功能测试场景。
+## 技能树功能测试：面板只发 unlock_requested，由场景协调层改 SkillTree。
 
 const TREE_DEF_PATH := "res://src/skill_tree/trees/warrior_skill_tree.tres"
 
@@ -14,11 +14,11 @@ var _tree: SkillTree
 
 
 func _ready() -> void:
+	tip_label.text = "表现层 SkillTreePanel → unlock_requested → 本场景改 SkillTree 数据"
 	add_point_button.pressed.connect(_on_add_point_pressed)
 	reset_button.pressed.connect(_on_reset_pressed)
 	_setup_tree(3)
-	skill_tree_panel.unlock_succeeded.connect(_on_unlock_succeeded)
-	skill_tree_panel.unlock_failed.connect(_on_unlock_failed)
+	skill_tree_panel.unlock_requested.connect(_on_unlock_requested)
 	skill_tree_panel.node_clicked.connect(_on_node_clicked)
 
 
@@ -46,15 +46,14 @@ func _on_node_clicked(node_id: String) -> void:
 	_append_log("选中节点：%s" % node_id)
 
 
-func _on_unlock_succeeded(node_id: String) -> void:
-	var node := _tree.definition.get_node(node_id)
-	var node_name := node.display_name if node else node_id
-	_append_log("[color=lime]解锁成功：%s[/color]" % node_name)
+func _on_unlock_requested(node_id: String) -> void:
+	if _tree.unlock(node_id):
+		var node := _tree.definition.get_node(node_id)
+		var node_name := node.display_name if node else node_id
+		_append_log("[color=lime]解锁成功：%s[/color]" % node_name)
+	else:
+		_append_log("[color=orange]解锁失败（%s）[/color]" % node_id)
 	_refresh_unlocked_list()
-
-
-func _on_unlock_failed(node_id: String, reason: String) -> void:
-	_append_log("[color=orange]解锁失败（%s）：%s[/color]" % [node_id, reason])
 
 
 func _refresh_unlocked_list() -> void:
@@ -64,8 +63,13 @@ func _refresh_unlocked_list() -> void:
 		lines.append("（无）")
 	else:
 		for skill in skills:
-			lines.append("- %s（MP%d, %.1fx）" % [
-				skill.display_name, skill.mp_cost, skill.power_multiplier
+			var power_text := ""
+			for effect in skill.effects:
+				if effect and effect.effect_type == SkillEffect.EffectType.DAMAGE:
+					power_text = ", %.1fx" % effect.power_multiplier
+					break
+			lines.append("- %s（MP%d%s）" % [
+				skill.display_name, skill.mp_cost, power_text
 			])
 	unlocked_label.text = "\n".join(lines)
 

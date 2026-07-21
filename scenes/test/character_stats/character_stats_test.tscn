@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://character_stats_test"]
 
-[ext_resource type="Script" path="res://scenes/test/character_stats_test.gd" id="1_script"]
+[ext_resource type="Script" path="res://scenes/test/character_stats/character_stats_test.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/ui/character_stats_panel.tscn" id="2_panel"]
 
 [node name="CharacterStatsTest" type="Control"]

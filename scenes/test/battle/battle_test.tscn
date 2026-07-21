@@ -1,0 +1,185 @@
+[gd_scene format=3 uid="uid://bctc2x12witcy"]
+
+[ext_resource type="Script" path="res://scenes/test/battle/battle_test.gd" id="1_battle"]
+[ext_resource type="Script" path="res://src/turn_based/turn_manager.gd" id="2_manager"]
+[ext_resource type="PackedScene" path="res://scenes/characters/warrior_battle.tscn" id="3_warrior"]
+[ext_resource type="PackedScene" path="res://scenes/characters/monk_battle.tscn" id="4_monk"]
+[ext_resource type="Script" path="res://src/turn_based/skills/skill_definition.gd" id="5_skill_def"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/power_slash.tres" id="6_power_slash"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/sweeping_slash.tres" id="7_sweep"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/battle_rally.tres" id="8_rally"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/war_cry.tres" id="9_cry"]
+[ext_resource type="Resource" path="res://src/turn_based/skills/fireball.tres" id="10_fire"]
+[ext_resource type="Script" path="res://scenes/battle/battle_vfx_player.gd" id="11_vfx"]
+
+[node name="BattleTest" type="Node2D"]
+script = ExtResource("1_battle")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.16, 0.2, 0.18, 1)
+
+[node name="TurnManager" type="Node" parent="."]
+script = ExtResource("2_manager")
+
+[node name="BattleField" type="Node2D" parent="."]
+position = Vector2(0, 40)
+
+[node name="VfxPlayer" type="Node2D" parent="BattleField"]
+script = ExtResource("11_vfx")
+battle_center = Vector2(560, 240)
+
+[node name="Players" type="Node2D" parent="BattleField"]
+
+[node name="Warrior1" parent="BattleField/Players" instance=ExtResource("3_warrior")]
+position = Vector2(180, 160)
+scale = Vector2(0.8, 0.8)
+unit_id = "warrior_1"
+display_name = "战士·壹"
+team = 0
+max_hp = 120
+max_mp = 50
+attack_power = 18
+speed = 14
+player_controlled = true
+face_right = true
+skills = Array[ExtResource("5_skill_def")]([ExtResource("6_power_slash"), ExtResource("7_sweep"), ExtResource("8_rally"), ExtResource("9_cry")])
+
+[node name="Warrior2" parent="BattleField/Players" instance=ExtResource("3_warrior")]
+position = Vector2(180, 320)
+scale = Vector2(0.8, 0.8)
+unit_id = "warrior_2"
+display_name = "战士·贰"
+team = 0
+max_hp = 100
+max_mp = 45
+attack_power = 15
+speed = 12
+player_controlled = true
+face_right = true
+skills = Array[ExtResource("5_skill_def")]([ExtResource("6_power_slash"), ExtResource("8_rally"), ExtResource("10_fire")])
+
+[node name="Enemies" type="Node2D" parent="BattleField"]
+
+[node name="Monk1" parent="BattleField/Enemies" instance=ExtResource("4_monk")]
+position = Vector2(920, 80)
+scale = Vector2(0.75, 0.75)
+unit_id = "monk_1"
+display_name = "僧侣·壹"
+team = 1
+max_hp = 70
+max_mp = 20
+attack_power = 12
+speed = 10
+face_right = false
+skills = Array[ExtResource("5_skill_def")]([ExtResource("6_power_slash")])
+
+[node name="Monk2" parent="BattleField/Enemies" instance=ExtResource("4_monk")]
+position = Vector2(920, 170)
+scale = Vector2(0.75, 0.75)
+unit_id = "monk_2"
+display_name = "僧侣·贰"
+team = 1
+max_hp = 65
+max_mp = 18
+attack_power = 11
+speed = 11
+face_right = false
+skills = Array[ExtResource("5_skill_def")]([ExtResource("6_power_slash")])
+
+[node name="Monk3" parent="BattleField/Enemies" instance=ExtResource("4_monk")]
+position = Vector2(920, 260)
+scale = Vector2(0.75, 0.75)
+unit_id = "monk_3"
+display_name = "僧侣·叁"
+team = 1
+max_hp = 75
+max_mp = 22
+attack_power = 13
+speed = 9
+face_right = false
+skills = Array[ExtResource("5_skill_def")]([ExtResource("6_power_slash")])
+
+[node name="Monk4" parent="BattleField/Enemies" instance=ExtResource("4_monk")]
+position = Vector2(920, 350)
+scale = Vector2(0.75, 0.75)
+unit_id = "monk_4"
+display_name = "僧侣·肆"
+team = 1
+max_hp = 60
+max_mp = 16
+attack_power = 10
+speed = 13
+face_right = false
+skills = Array[ExtResource("5_skill_def")]([ExtResource("6_power_slash")])
+
+[node name="Monk5" parent="BattleField/Enemies" instance=ExtResource("4_monk")]
+position = Vector2(920, 440)
+scale = Vector2(0.75, 0.75)
+unit_id = "monk_5"
+display_name = "僧侣·伍"
+team = 1
+max_hp = 80
+max_mp = 24
+attack_power = 14
+speed = 8
+face_right = false
+skills = Array[ExtResource("5_skill_def")]([ExtResource("6_power_slash")])
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="UI/MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="StatusLabel" type="Label" parent="UI/MarginContainer/VBox"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "战斗测试"
+
+[node name="Spacer" type="Control" parent="UI/MarginContainer/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="ActionPanel" type="HBoxContainer" parent="UI/MarginContainer/VBox"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 8
+
+[node name="TargetPanel" type="HBoxContainer" parent="UI/MarginContainer/VBox"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 8
+
+[node name="LogLabel" type="RichTextLabel" parent="UI/MarginContainer/VBox"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 0
+bbcode_enabled = true
+fit_content = false
+scroll_active = true
+scroll_following = true
+
+[node name="RestartButton" type="Button" parent="UI/MarginContainer/VBox"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "再战"

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://encounter_battle_overlay"]
+[gd_scene load_steps=4 format=3 uid="uid://encounter_battle_overlay"]
 
 [ext_resource type="Script" path="res://scenes/battle/encounter_battle.gd" id="1_script"]
 [ext_resource type="Script" path="res://src/turn_based/turn_manager.gd" id="2_manager"]
+[ext_resource type="Script" path="res://scenes/battle/battle_vfx_player.gd" id="3_vfx"]
 
 [node name="EncounterBattle" type="CanvasLayer"]
 layer = 10
@@ -33,6 +34,10 @@ script = ExtResource("2_manager")
 [node name="Players" type="Node2D" parent="BattleRoot/BattleField"]
 
 [node name="Enemies" type="Node2D" parent="BattleRoot/BattleField"]
+
+[node name="VfxPlayer" type="Node2D" parent="BattleRoot/BattleField"]
+script = ExtResource("3_vfx")
+battle_center = Vector2(560, 280)
 
 [node name="UI" type="Control" parent="BattleRoot"]
 layout_mode = 1

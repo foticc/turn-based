@@ -1,24 +1,19 @@
 [gd_scene format=3 uid="uid://ddgb6ljhwq1bp"]
 
-[ext_resource type="Script" uid="uid://dqddmdjkxti83" path="res://scenes/test/world_battle_test.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dqddmdjkxti83" path="res://scenes/test/world_battle/world_battle_test.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://b6nwdxlrvdr16" path="res://scenes/map/novice_village.tscn" id="2_map"]
 [ext_resource type="PackedScene" path="res://scenes/characters/warrior_world.tscn" id="3_player"]
 [ext_resource type="PackedScene" path="res://scenes/characters/world_enemy.tscn" id="4_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/battle/encounter_battle.tscn" id="5_battle"]
-[ext_resource type="Script" uid="uid://dosy2f6fewrfm" path="res://src/inventory/inventory.gd" id="6_inventory"]
-[ext_resource type="PackedScene" path="res://scenes/ui/character_stats_panel.tscn" id="7_stats"]
-[ext_resource type="PackedScene" path="res://scenes/ui/equipment_panel.tscn" id="8_equip"]
+[ext_resource type="PackedScene" uid="uid://i1g0qfr3mo3h" path="res://scenes/ui/character_stats_panel.tscn" id="7_stats"]
+[ext_resource type="PackedScene" uid="uid://dwr0nl2tulwr4" path="res://scenes/ui/equipment_panel.tscn" id="8_equip"]
 [ext_resource type="PackedScene" uid="uid://oo25b76c1rp8" path="res://scenes/ui/inventory_panel.tscn" id="9_inv"]
 [ext_resource type="PackedScene" path="res://scenes/ui/skill_tree_panel.tscn" id="10_skill"]
 
-[node name="WorldBattleTest" type="Node2D" unique_id=751670776]
+[node name="WorldBattleTest" type="Node2D" unique_id=607664799]
 script = ExtResource("1_script")
 
-[node name="Inventory" type="Node" parent="." unique_id=2054536219]
-script = ExtResource("6_inventory")
-capacity = 24
-
-[node name="NoviceVillage" parent="." unique_id=1603254419 instance=ExtResource("2_map")]
+[node name="NoviceVillage" parent="." unique_id=850833777 instance=ExtResource("2_map")]
 
 [node name="Entities" type="Node2D" parent="." unique_id=516747436]
 

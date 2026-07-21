@@ -1,6 +1,6 @@
 class_name EquipmentPanel
 extends PanelContainer
-## 装备栏面板：武器、头冠、衣服、鞋子、腰带、玉佩、项链、双手镯。
+## 装备栏面板：槽位在场景中预置，各自可设不同背景；脚本只刷新装备内容。
 
 signal slot_clicked(slot: ItemDefinition.EquipSlot)
 signal unequip_requested(slot: ItemDefinition.EquipSlot)
@@ -10,41 +10,28 @@ signal unequip_requested(slot: ItemDefinition.EquipSlot)
 
 var equipment: Equipment
 var _selected_slot: ItemDefinition.EquipSlot = ItemDefinition.EquipSlot.NONE
-var _slot_buttons: Dictionary = {}
-var _slot_items: Dictionary = {} # EquipSlot -> ItemDefinition
+var _slot_uis: Dictionary = {} # EquipSlot -> EquipmentSlotUI
 
 
 func _ready() -> void:
-	_build_slot_buttons()
+	_collect_slot_uis()
 	_refresh()
 
 
-func _build_slot_buttons() -> void:
+func _collect_slot_uis() -> void:
+	_slot_uis.clear()
 	for child in slots_grid.get_children():
-		child.queue_free()
-	_slot_buttons.clear()
-	_slot_items.clear()
-
-	for slot in [
-		ItemDefinition.EquipSlot.WEAPON,
-		ItemDefinition.EquipSlot.HELMET,
-		ItemDefinition.EquipSlot.CLOTHES,
-		ItemDefinition.EquipSlot.SHOES,
-		ItemDefinition.EquipSlot.BELT,
-		ItemDefinition.EquipSlot.JADE_PENDANT,
-		ItemDefinition.EquipSlot.NECKLACE,
-		ItemDefinition.EquipSlot.BRACELET_LEFT,
-		ItemDefinition.EquipSlot.BRACELET_RIGHT,
-	]:
-		var btn := Button.new()
-		btn.custom_minimum_size = Vector2(100, 72)
-		btn.focus_mode = Control.FOCUS_NONE
-		btn.pressed.connect(_on_slot_pressed.bind(slot))
-		btn.gui_input.connect(_on_slot_gui_input.bind(slot))
-		btn.mouse_entered.connect(_on_slot_mouse_entered.bind(slot))
-		btn.mouse_exited.connect(_on_slot_mouse_exited)
-		slots_grid.add_child(btn)
-		_slot_buttons[slot] = btn
+		if child is not EquipmentSlotUI:
+			continue
+		var slot_ui := child as EquipmentSlotUI
+		if slot_ui.equip_slot == ItemDefinition.EquipSlot.NONE:
+			push_warning("EquipmentSlotUI 未设置 equip_slot: %s" % slot_ui.name)
+			continue
+		_slot_uis[slot_ui.equip_slot] = slot_ui
+		if not slot_ui.slot_clicked.is_connected(_on_slot_clicked):
+			slot_ui.slot_clicked.connect(_on_slot_clicked)
+		if not slot_ui.unequip_requested.is_connected(_on_unequip_requested):
+			slot_ui.unequip_requested.connect(_on_unequip_requested)
 
 
 func bind(target_equipment: Equipment) -> void:
@@ -65,63 +52,28 @@ func get_selected_slot() -> ItemDefinition.EquipSlot:
 	return _selected_slot
 
 
-func _on_slot_pressed(slot: ItemDefinition.EquipSlot) -> void:
+func _on_slot_clicked(slot: ItemDefinition.EquipSlot) -> void:
 	ItemTooltip.hide_tooltip()
 	_selected_slot = slot
 	slot_clicked.emit(slot)
 	_refresh()
 
 
-func _on_slot_gui_input(event: InputEvent, slot: ItemDefinition.EquipSlot) -> void:
-	if event is not InputEventMouseButton:
-		return
-	var mouse_event := event as InputEventMouseButton
-	if not mouse_event.pressed:
-		return
-
-	if mouse_event.button_index == MOUSE_BUTTON_RIGHT:
-		ItemTooltip.hide_tooltip()
-		_selected_slot = slot
-		_refresh()
-		if _slot_items.get(slot) != null:
-			unequip_requested.emit(slot)
-		accept_event()
-	elif mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.double_click:
-		ItemTooltip.hide_tooltip()
-		_selected_slot = slot
-		_refresh()
-		if _slot_items.get(slot) != null:
-			unequip_requested.emit(slot)
-		accept_event()
-
-
-func _on_slot_mouse_entered(slot: ItemDefinition.EquipSlot) -> void:
-	var item: ItemDefinition = _slot_items.get(slot)
-	if item:
-		ItemTooltip.request_show(item, "双击或右键卸下")
-	else:
-		ItemTooltip.hide_tooltip()
-
-
-func _on_slot_mouse_exited() -> void:
+func _on_unequip_requested(slot: ItemDefinition.EquipSlot) -> void:
 	ItemTooltip.hide_tooltip()
+	_selected_slot = slot
+	_refresh()
+	unequip_requested.emit(slot)
 
 
 func _refresh() -> void:
-	for slot in _slot_buttons.keys():
-		var btn: Button = _slot_buttons[slot]
+	for slot in _slot_uis.keys():
+		var slot_ui: EquipmentSlotUI = _slot_uis[slot]
 		var item: ItemDefinition = null
 		if equipment:
 			item = equipment.get_equipped(slot)
-		_slot_items[slot] = item
-
-		var slot_name := ItemDefinition.get_slot_display_name(slot)
-		btn.tooltip_text = ""
-		btn.icon = item.icon if item else null
-		btn.expand_icon = true
+		var selected :bool = slot == _selected_slot
 		if item:
-			btn.text = "%s\n%s" % [slot_name, item.display_name]
-			btn.modulate = Color(1.0, 0.95, 0.7) if slot == _selected_slot else Color.WHITE
+			slot_ui.set_item(item, selected)
 		else:
-			btn.text = "%s\n（空）" % slot_name
-			btn.modulate = Color(0.75, 0.75, 0.8) if slot == _selected_slot else Color(0.9, 0.9, 0.9)
+			slot_ui.clear_slot(selected)

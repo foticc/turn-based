@@ -1,0 +1,131 @@
+[gd_scene load_steps=4 format=3 uid="uid://architecture_test"]
+
+[ext_resource type="Script" path="res://scenes/test/architecture/architecture_test.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/character_sheet_panel.tscn" id="2_sheet"]
+[ext_resource type="PackedScene" path="res://scenes/ui/skill_tree_panel.tscn" id="3_skill"]
+
+[node name="ArchitectureTest" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.12, 0.16, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="HBox" type="HBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Left" type="VBoxContainer" parent="Margin/HBox"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Margin/HBox/Left"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "分层架构测试"
+horizontal_alignment = 1
+
+[node name="LayerLabel" type="RichTextLabel" parent="Margin/HBox/Left"]
+custom_minimum_size = Vector2(0, 220)
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="SnapshotLabel" type="RichTextLabel" parent="Margin/HBox/Left"]
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="Buttons" type="VBoxContainer" parent="Margin/HBox/Left"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="DamageButton" type="Button" parent="Margin/HBox/Left/Buttons"]
+layout_mode = 2
+text = "数据层：受伤 25"
+
+[node name="HealButton" type="Button" parent="Margin/HBox/Left/Buttons"]
+layout_mode = 2
+text = "数据层：治疗 40"
+
+[node name="SnapshotButton" type="Button" parent="Margin/HBox/Left/Buttons"]
+layout_mode = 2
+text = "刷新战斗快照"
+
+[node name="AddPointButton" type="Button" parent="Margin/HBox/Left/Buttons"]
+layout_mode = 2
+text = "+1 技能点"
+
+[node name="ItemListTitle" type="Label" parent="Margin/HBox/Left"]
+layout_mode = 2
+text = "ItemDatabase（按 id 发放）"
+horizontal_alignment = 1
+
+[node name="ItemList" type="ItemList" parent="Margin/HBox/Left"]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GrantSelectedButton" type="Button" parent="Margin/HBox/Left"]
+layout_mode = 2
+text = "发放选中物品"
+
+[node name="LogLabel" type="RichTextLabel" parent="Margin/HBox/Left"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true
+
+[node name="Center" type="VBoxContainer" parent="Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="CenterTitle" type="Label" parent="Margin/HBox/Center"]
+layout_mode = 2
+text = "表现层：角色面板（bind PlayerState）"
+horizontal_alignment = 1
+
+[node name="CharacterSheetPanel" parent="Margin/HBox/Center" instance=ExtResource("2_sheet")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Right" type="VBoxContainer" parent="Margin/HBox"]
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="RightTitle" type="Label" parent="Margin/HBox/Right"]
+layout_mode = 2
+text = "表现层：技能树（只发意图）"
+horizontal_alignment = 1
+
+[node name="SkillTreePanel" parent="Margin/HBox/Right" instance=ExtResource("3_skill")]
+layout_mode = 2
+size_flags_vertical = 3

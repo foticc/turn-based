@@ -8,6 +8,9 @@ enum TargetType {
 	SINGLE_ENEMY,
 	SINGLE_ALLY,
 	ANY_SINGLE,
+	## 玩家点主目标，其余从候选中随机补足（见 SkillAction.max_targets）
+	MULTI_ENEMY,
+	MULTI_ALLY,
 }
 
 

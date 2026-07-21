@@ -1,14 +1,22 @@
-[gd_resource type="Resource" script_class="SkillDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="SkillDefinition" format=3 uid="uid://pf8ar5qky4ur"]
 
-[ext_resource type="Script" path="res://src/turn_based/skills/skill_definition.gd" id="1_def"]
+[ext_resource type="Script" uid="uid://cjd71oafpk4of" path="res://src/turn_based/skills/skill_definition.gd" id="1_def"]
+[ext_resource type="Script" uid="uid://yo5jff7k5g8a" path="res://src/turn_based/skills/skill_effect.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="Effect_dmg"]
+script = ExtResource("2_fx")
+power_multiplier = 2.0
 
 [resource]
 script = ExtResource("1_def")
 id = "fireball"
 display_name = "火球术"
-description = "凝聚火焰化为火球砸向敌人，伤害很高但消耗与冷却也更大。"
-mp_cost = 12
-power_multiplier = 2.2
+description = "高倍率火球，冷却 2 回合。特效在战场中央爆发。"
+mp_cost = 14
 cooldown_turns = 2
-animation_name = &"attack2"
+effects = Array[ExtResource("2_fx")]([SubResource("Effect_dmg")])
 animation_duration = 0.55
+vfx_anchor = 2
+vfx_color = Color(1, 0.35, 0.1, 0.85)
+vfx_duration = 0.55
+vfx_radius = 70.0
